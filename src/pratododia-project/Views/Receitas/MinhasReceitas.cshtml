@@ -1,0 +1,652 @@
+﻿@model pratododia_project.ViewModels.MinhasReceitasVM
+
+@{
+    ViewData["Title"] = "Minhas Receitas";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/calendar.css" />
+    <link rel="stylesheet" href="~/css/my-recipes.css" />
+    <link rel="stylesheet" href="~/css/aside.css" />
+
+}
+
+<main class="gap-2 grow-1 container-lg d-flex flex-column flex-xl-row">
+
+    <aside class="p-large grow-1 f-column gap-large">
+        <div class="f-row gap-regular jus-center">
+            <button class="genericButton buttonActive"> Receitas Salvas </button>
+            <span class="splitter"></span>
+            <button class="genericButton"> Receitas Criadas </button>
+        </div>
+
+
+        <div class="cardsDiv" id="receitas-salvas">
+            @if (Model.ReceitasSalvas != null && Model.ReceitasSalvas.Any())
+            {
+                @foreach (var receitaSalva in Model.ReceitasSalvas)
+                {
+                    var receita = receitaSalva.Receita;
+
+
+                    <div class="recipeAside f-row" idreceita="@receita.IdReceita">
+                        <div class="asideImg form-group align-self-center d-flex justify-content-center align-items-center">
+                            <img class="w-100" src="~/@receita.CaminhoImg" style="object-fit: cover;object-position: center;">
+                        </div>
+                   
+
+                        <div class="recipeText p-3 grow-1 f-column gap-2">
+                            <div class="fw-bold fs-5">@receita.NomeReceita</div>
+                            <div class="recipeAttributes f-column gap-small">
+                                <div class="f-row ali-center gap-regular">
+                                    <div class="icon-regular">
+                                        <img src="~/img/icons/difficulty.png" />
+                                    </div>
+                                    <span class="attributeValue">@receita.Dificuldade</span>
+                                </div>
+                                <div class="f-row ali-center gap-regular">
+                                    <div class="icon-regular">
+                                        <img src="~/img/icons/clock.png" />
+                                    </div>
+                                    <span class="attributeValue">
+                                        @receita.TempoPreparo
+                                    </span>
+                                </div>
+                                <div class="f-row ali-center gap-regular">
+                                    <div class="icon-regular">
+                                        <img src="~/img/icons/rating.png" />
+                                    </div>
+                                    <span class="attributeValue">@receita.Avaliacao.ToString("F1")</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="buttons-div d-flex flex-column justify-content-center align-items-end p-3">
+                            <button class="btn saveRecipeButton" id="saveRecipeButton" data-receita-id="@receita.IdReceita">
+                                <img src="~/img/icons/saved.png" id="saveRecipeIcon" class="icon-regular align-self-center" />
+                            </button>
+                            <div class="d-flex f-column justify-content-end gap-2">
+                                <a id="btnDetails" asp-controller="Receitas" asp-action="Details" asp-route-id=@receita.IdReceita class="btn btn-light d-flex justify-content-between gap-2">
+                                    Detalhes
+                                    <img src="~/img/icons/Details.png" class="icon-regular align-self-center" />
+                                </a>
+                                <button class="scheduleRecipeButton btn btn-light d-flex justify-content-between gap-2" data-receita-id="@receita.IdReceita">
+                                    Agendar
+                                    <img src="~/img/icons/schedule.png" class="icon-regular align-self-center" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="recipeAside d-flex f-column justify-content-center align-items-center">
+                    <p>Nenhuma receita salva.</p>
+                </div>
+            }
+        </div>
+
+        <div class="cardsDiv" id="receitas-criadas">
+
+            @if (Model.ReceitasCriadas != null && Model.ReceitasCriadas.Any())
+            {
+                    <div class="d-flex f-column gap-regular justify-content-center align-items-center">
+                        <a class="btn-primary addRecipe f-row ali-center jus-center justify-self-center c-pointer" asp-area="" asp-controller="Receitas" asp-action="Create">
+                            Adicionar receita
+                            <img src="~/img/icons/add.png" alt="" class="icon-xlarge" style="filter: invert(1)">
+                        </a>
+                    </div>
+ 
+
+
+                @foreach (var receita in Model.ReceitasCriadas)
+                {
+                    <section class="recipeAside f-row" idreceita="@receita.IdReceita">
+
+                        <div class="asideImg form-group align-self-center d-flex justify-content-center align-items-center">
+                            <img class="w-100" src="~/@receita.CaminhoImg" style="object-fit: cover;object-position: center;">
+                        </div>
+                        <div class="recipeText p-3 grow-1 f-column gap-2">
+                            <div class="fw-bold fs-5">@receita.NomeReceita</div>
+                            <div class="recipeAttributes f-column gap-small">
+                                <div class="f-row ali-center gap-regular">
+                                    <div class="icon-regular">
+                                        <img src="~/img/icons/difficulty.png" />
+                                    </div>
+                                    <span class="attributeValue">@receita.Dificuldade</span>
+                                </div>
+                                <div class="f-row ali-center gap-regular">
+                                    <div class="icon-regular">
+                                        <img src="~/img/icons/clock.png" />
+                                    </div>
+                                    <span class="attributeValue">
+                                        @receita.TempoPreparo
+                                    </span>
+                                </div>
+                                <div class="f-row ali-center gap-regular">
+                                    <div class="icon-regular">
+                                        <img src="~/img/icons/rating.png" />
+                                    </div>
+                                    <span class="attributeValue">@receita.Avaliacao.ToString("F1")</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="d-flex f-column gap-regular p-regular justify-content-center align-items-end">
+                            <div class="d-flex f-row gap-regular justify-content-end w-100">
+                                <a class="btn btn-light d-flex" onclick="location.href='/Receitas/Edit/@receita.IdReceita'">
+                                    <img src="~/img/icons/edit.png" class="icon-regular align-self-center" alt="Alternate Text" />
+                                </a>
+                                <button class="removeBtn btn btn-danger d-flex" data-receita-id="@receita.IdReceita">
+                                    <img src="~/img/icons/remove.png" class="icon-regular align-self-center" style="filter: invert();" />
+                                </button>
+                            </div>
+                            <div class="d-flex f-column gap-regular justify-content-end">
+                                <a id="btnDetails" asp-controller="Receitas" asp-action="Details" asp-route-id=@receita.IdReceita class="btn btn-light d-flex justify-content-between gap-2">
+                                    Detalhes
+                                    <img src="~/img/icons/Details.png" class="icon-regular align-self-center" />
+                                </a>
+                                <button class="scheduleRecipeButton btn btn-light d-flex justify-content-between gap-2" data-receita-id="@receita.IdReceita">
+                                    Agendar
+                                    <img src="~/img/icons/schedule.png" class="icon-regular align-self-center" />
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                  
+                    
+
+                }
+            }
+            else
+
+            {
+                <div class="recipeAside d-flex f-column justify-content-center align-items-center">
+                    <p>Nenhuma receita criada. Clique abaixo e adicione sua primeira receita.</p>
+                    <div class="d-flex f-column gap-regular justify-content-center align-items-center">
+                        <a class="btn-primary addRecipe f-row ali-center jus-center justify-self-center c-pointer" asp-area="" asp-controller="Receitas" asp-action="Create">
+                            Adicionar receita
+                            <img src="~/img/icons/add.png" alt="" class="icon-xlarge" style="filter: invert(1)">
+                        </a>
+                    </div>
+                </div>
+
+            }
+
+          
+              
+        </div>
+    </aside>
+
+    <div class="d-flex f-column align-items-center mb-3">
+        <label class="fw-bold p-3 fs-3 text-center">Meu calendário de receitas</label>
+        <div class="d-flex gap-3 flex-column flex-md-row flex-xl-column back-calendar">
+            <div class="calendar-container p-3">
+                <div class="calendar-header">
+                    <label class="calendar-current-date fw-bold p-3"></label>
+                    <div class="calendar-navigation">
+                        <button id="calendar-prev"
+                                class="btn d-flex">
+                            <img src="/img/icons/toggleArrow.png" class="icon-small align-self-center" style="transform: scaleX(-1)" />
+                        </button>
+                        <button id="calendar-next"
+                                class="btn d-flex">
+                            <img src="/img/icons/toggleArrow.png" class="icon-small align-self-center" />
+                        </button>
+                    </div>
+                </div>
+
+                <div class="calendar-body">
+                    <ul class="calendar-weekdays">
+                        <li>Dom</li>
+                        <li>Seg</li>
+                        <li>Ter</li>
+                        <li>Qua</li>
+                        <li>Qui</li>
+                        <li>Sex</li>
+                        <li>Sab</li>
+                    </ul>
+                    <ul class="calendar-dates"></ul>
+                </div>
+
+                <div class="calendar-legenda d-flex gap-2 justify-content-evenly align-items-center">
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        <img src="~/img/icons/ActualDay.png" class="icon-large" alt="" />
+                        <label>Dia Atual</label>
+                    </div>
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        <img src="~/img/icons/SelectDay.png" class="icon-large" alt="" />
+                        <label>Dia Selecionado</label>
+                    </div>
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        <img src="~/img/icons/PlannedDay.png" class="icon-large" alt="" />
+                        <label>Receita </label>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="d-flex flex-column w-100">
+                <div class="cardSchedule w-100 d-flex align-items-center justify-content-center">
+                    <label id="Date" class="fs-5 p-3 label"/>
+                </div>
+                <div id="scheduled-container" class="d-flex flex-column align-items-center gap-3 mb-3 w-100">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="bg-modal">
+        <form method="post" id="schedulePopUp" asp-controller="Receitas" asp-action="PlanRecipe" class="f-row jus-center ali-center">
+            <input id="id-receita" type="hidden" name="idReceita" value="" />
+            <div id="popUp" class="p-large f-column gap-large">
+                <div class="d-flex f-row justify-content-between align-items-center gap-large">
+                    <div class="subtitle grow-1">Selecione uma data</div>
+                    <div class="icon-large">
+                        <img class="closePopUp" src="~/img/icons/x.png" alt="X" />
+                    </div>
+                </div>
+                <div class="f-row gap-large">
+                    <div class="f-row grow-1">
+                        <input type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" name="data" class="input-data p-2" id="scheduleDate" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Planejar</button>
+                </div>
+            </div>
+        </form>
+
+        <form asp-action="DeletarReceita" method="post" id="removePopUp" class="f-row jus-center ali-center">
+            <input id="id-receita-delete" type="hidden" name="id" value="" />
+            <input type="hidden" name="returnPage" value="Details" />
+            <div id="remPopUp" class="p-large f-column gap-large">
+                <div class="f-row gap-large align-items-center">
+                    <div class="subtitle grow-1">Remover Receita?</div>
+                    <div class="icon-large">
+                        <img class="closePopUp" src="~/img/icons/x.png" alt="X" />
+                    </div>
+                </div>
+                <p>Você não poderá desfazer essa ação. </p>
+                <div class="f-row gap-large justify-content-between">
+                    <button type="button" id="cancelBtn" class="closePopUp">Cancelar</button>
+                    <button id="confirm-remove" type="submit" data-receita-id="" class="btn btn-danger">
+                        Remover
+                        <img src="~/img/icons/remove.png" class="icon-regular justify-self-center" style="filter: invert();" />
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+  
+
+
+</main>
+
+@section Scripts {
+
+    <script defer>
+        // Seção de Receitas
+        let buttons = document.querySelectorAll(".genericButton");
+        let divs = [
+            document.querySelector('#receitas-salvas'),
+            document.querySelector('#receitas-criadas')
+        ];
+
+        divs[0].style.display = 'flex';
+        divs.slice(1).forEach(div => div.style.display = 'none');
+
+
+        buttons.forEach((button, index) => {
+            button.addEventListener("click", () => {
+                console.log("oi")
+                divs.forEach(div => (div.style.display = 'none'));
+
+                divs[index].style.display = 'flex';
+
+                buttons.forEach(btn => btn.classList.remove("buttonActive"));
+
+                button.classList.toggle("buttonActive");
+            });
+        });
+
+        //Button Saved
+        var btnSaved = document.querySelectorAll(".saveRecipeButton")
+        var savedIcon = '@Url.Content("~/img/icons/saved.png")';
+        var saveIcon = '@Url.Content("~/img/icons/save.png")';
+
+        btnSaved.forEach((btn) => {
+            btn.onclick = () => {
+                let receitaId = $(btn).data('receita-id');
+                $(btn).prop('disabled', false);
+                document.body.style.cursor = "wait";
+                $(btn).css("cursor", "wait")
+
+                $.ajax({
+                    url: '@Url.Action("SaveRecipe", "Receitas")',
+                    type: 'POST',
+                    data: { idReceita: receitaId },
+                    success: function (response) {
+                        if (response.success) {
+                            var imgSrc = (response.action === "saved")
+                                ? savedIcon
+                                : saveIcon;
+                            $(btn).find('img').attr('src', imgSrc);
+                        }
+                    },
+                    error: function () {
+                        alert('Erro ao tentar salvar/remover a receita');
+                    },
+                    complete: function () {
+                        $(btn).prop('disabled', false);
+                        document.body.style.cursor = "default"
+                        $(btn).css("cursor", "default")
+                    }
+                });
+            }
+        })
+
+        //Pop-up
+        let scheduleIcons = document.querySelectorAll(".scheduleRecipeButton");
+        let schedulePopUp = document.getElementById("schedulePopUp");
+        let backgroundModal = document.getElementById("bg-modal");
+
+        scheduleIcons.forEach((scheduleIcon) => {
+            scheduleIcon.onclick = () => {
+                let idReceita = scheduleIcon.getAttribute("data-receita-id");
+                console.log(idReceita)
+                document.querySelector("#id-receita").value = idReceita;
+
+                backgroundModal.style.display = "flex";
+                schedulePopUp.style.display = "flex";
+            };
+        });
+
+        let closePopUp = document.querySelectorAll(".closePopUp");
+        closePopUp[0].onclick = () => {
+            schedulePopUp.style.display = "none";
+            backgroundModal.style.display = "none";
+        };
+
+        document.onclick = (element) => {
+            if (
+                schedulePopUp.style.display == "flex" &&
+                element.target.id == schedulePopUp.id &&
+                element.target.id !== scheduleIcon.id
+            ) {
+                schedulePopUp.style.display = "none";
+            }
+        };
+
+        let removeIcons = document.querySelectorAll(".removeBtn");
+        let removePopUp = document.getElementById("removePopUp");
+
+        removeIcons.forEach((removeIcon) => {
+            removeIcon.onclick = () => {
+             let idReceita = removeIcon.getAttribute("data-receita-id");
+                console.log(idReceita)
+                document.querySelector("#id-receita-delete").value = idReceita;
+                document.querySelector('#confirm-remove').getAttribute("data-receita-id").replace(idReceita);
+                removePopUp.style.display = "flex";
+                backgroundModal.style.display = "flex";
+
+        };
+        })
+        
+
+        //Remove Pop Up
+        let remPopUp = document.getElementById("remPopUp");
+        if (removePopUp && closePopUp.length > 0) {
+               closePopUp[1].onclick = () => {
+               removePopUp.style.display = "none";
+               backgroundModal.style.display = "none";
+        };
+
+    
+        }
+      
+        backgroundModal.onclick = (element) => {
+            if (
+                removePopUp.style.display == "flex" &&
+                element.target.id == removePopUp.id &&
+                element.target.id !== removeIcon.id
+            ) {
+                removePopUp.style.display = "none";
+            }
+        };
+
+      if (closePopUp.length > 2) { // Verifique se o botão de fechar existe
+    closePopUp[2].onclick = () => {
+        removePopUp.style.display = "none";
+        backgroundModal.style.display = "none";
+    };
+}
+
+
+        //Calendar
+        document.addEventListener("DOMContentLoaded", () => {
+            let date = new Date();
+            let year = date.getFullYear();
+            let month = date.getMonth();
+
+            const day = document.querySelector(".calendar-dates");
+
+            const currdate = document
+                .querySelector(".calendar-current-date");
+
+            const prenexIcons = document
+                .querySelectorAll(".calendar-navigation button");
+
+            const months = [
+                "Janeiro",
+                "Fevereiro",
+                "Março",
+                "Abril",
+                "Maio",
+                "Junho",
+                "Julho",
+                "Agosto",
+                "Setembro",
+                "Outubro",
+                "Novembro",
+                "Dezembro"
+            ];
+
+            // Extraindo o array de datas de receitasPlanejadas e convertendo para objetos Date
+            var receitasPlanejadas = JSON.parse('@Html.Raw(Json.Serialize(Model.ReceitasPlanejadas))');
+
+            // Garantindo que $values seja um array e convertendo as strings para objetos Date
+            if (Array.isArray(receitasPlanejadas.$values)) {
+                receitasPlanejadas = receitasPlanejadas.$values.map(planejada => new Date(planejada));
+            } else {
+                console.error("receitasPlanejadas não contém um array válido em $values");
+                receitasPlanejadas = []; // Define como um array vazio caso não seja válido
+            }
+
+
+
+            const manipulate = () => {
+
+                let dayone = new Date(year, month, 1).getDay();
+
+                let lastdate = new Date(year, month + 1, 0).getDate();
+
+                let dayend = new Date(year, month, lastdate).getDay();
+
+                let monthlastdate = new Date(year, month, 0).getDate();
+
+                let lit = "";
+
+                for (let i = dayone; i > 0; i--) {
+                    lit +=
+                        `<li class="inactive">${monthlastdate - i + 1}</li>`;
+                }
+
+                for (let i = 1; i <= lastdate; i++) {
+                    // Verifica se a data do dia é um dia planejado
+                    let isPlanned = receitasPlanejadas.some(planejada => {
+                        return planejada.getDate() === i && planejada.getMonth() === month && planejada.getFullYear() === year;
+                    }) ? "planned" : "";
+
+                    let isToday = i === date.getDate() && month === new Date().getMonth() && year === new Date().getFullYear() ? "active" : "";
+
+                    lit += `<li class="${isToday} ${isPlanned} day">${i}</li>`;
+                }
+
+                for (let i = dayend; i < 6; i++) {
+                    lit += `<li class="inactive">${i - dayend + 1}</li>`
+                }
+
+                currdate.innerText = `${months[month]} ${year}`;
+
+                day.innerHTML = lit;
+            }
+
+
+
+            prenexIcons.forEach(icon => {
+
+                icon.addEventListener("click", () => {
+
+                    month = icon.id === "calendar-prev" ? month - 1 : month + 1;
+
+                    if (month < 0 || month > 11) {
+
+                        date = new Date(year, month, new Date().getDate());
+
+                        year = date.getFullYear();
+
+                        month = date.getMonth();
+
+                    }
+
+                    else {
+
+                        date = new Date();
+                    }
+
+                    manipulate();
+                    selectDay();
+                });
+            });
+
+            const actualDay = document.getElementById('Date');
+
+            function showDate() {
+                const today = document.querySelector(".active").innerText
+                console.log(today);
+
+                actualDay.innerText = `${today} de ${months[month]} de ${year}`;
+            }
+
+            function selectDay() {
+                let btnDays = document.querySelectorAll(".day")
+
+                btnDays.forEach((btnDay) => {
+                    btnDay.onclick = () => {
+
+                        btnDays.forEach((btn) => {
+                            btn.classList.remove('selectDay');
+                            btn.style.color = "";
+                        })
+
+                        btnDay.classList.add("selectDay");
+                        btnDay.style.color = "White";
+                        const selectDay = btnDay.innerText;
+
+                        const selectDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(selectDay).padStart(2, '0')}`;
+                        document.getElementById('Date').innerText =
+                            `${selectDay} de ${months[month]} de ${year}`;
+
+                        buscarReceitas(selectDate);
+                    }
+                })
+            }
+
+            function buscarReceitas(selectDate) {
+                $.ajax({
+                    url: '/Receitas/FilterRecipeDate',
+                    type: 'GET',
+                    data: { data: selectDate },
+                    success: function (data) {
+
+                        $('#scheduled-container').empty();
+
+                        let receitas = data?.$values || [];
+
+                        if (receitas.length > 0) {
+
+                            receitas.forEach(function (item) {
+                                $('#scheduled-container').append(`
+                                                 <section class="recipeCalendar f-row justify-content-between w-90" idreceita="${item.idReceita}">
+                                                         <div class="d-flex flex-row gap-2">  
+                                                         <div class="calendarImg f-row ali-center gap-1">
+                                                               <img src="/${item.caminhoImg}"/>
+                                                                    </div>
+                                                                    <div class="fw-bold py-2 d-flex justify-content-center align-items-center">
+                                                                           <label>${item.nomeReceita}</label>
+                                                                       </div></div>
+
+
+                                                            <div class="d-flex f-column justify-content-center gap-2 p-2">
+                                                               <a id="btnDetails" href="/Receitas/Details/${item.idReceita}" class="btn btn-light d-flex justify-content-between align-items-center gap-2 remove-text">
+                                                           Detalhes
+                                                           <img src="/img/icons/Details.png" class="icon-regular align-self-center"/>
+                                                       </a>
+                                                       <form method="post" action="/Receitas/DeletarPlanRecipe">
+                                                         <input type="hidden" name="idReceita" value="${item.idReceita}"/>
+                                                         <input type="hidden" name="data" value="${selectDate}"/>
+                                                            <button class="btn btn-secondary d-flex justify-content-between align-items-center gap-2 remove-text" >
+                                                              Remover
+                                                               <img src="/img/icons/x.png" class="icon-regular align-self-center" style="filter: invert();" />
+                                                            </button>
+                                                       </form>
+                                                     </div>
+                                                 </section>
+                                                `);
+                            });
+
+                            $('#scheduled-container').on('click', 'a#btnDetails', function (e) {
+                                const idReceita = $(this).closest('section').attr('idreceita');
+                            });
+                        }
+
+                        else {
+                            $('#scheduled-container').html(`
+                                        <div class="recipeCalendar d-flex f-column p-3 justify-content-center align-items-center">
+                                         <label>Nenhuma receita agendada para este dia!</label>
+                                        </div>
+                                    `);
+                        }
+                    },
+                    error: function (err) {
+                        console.error('Erro na requisição:', err);
+                    }
+                });
+            }
+
+            manipulate();
+            selectDay();
+            showDate();
+
+            // Função para obter a data de hoje no formato desejado (YYYY-MM-DD)
+            function obterDataAtual() {
+                const hoje = new Date();
+                const dia = String(hoje.getDate()).padStart(2, '0');
+                const mes = String(hoje.getMonth() + 1).padStart(2, '0'); // Meses começam do 0
+                const ano = hoje.getFullYear();
+                return `${ano}-${mes}-${dia}`; // Ex: "2024-11-24"
+            }
+
+            // Chama a função assim que a página for carregada
+            $(document).ready(function () {
+                const dataAtual = obterDataAtual(); // Obtém a data de hoje
+                buscarReceitas(dataAtual); // Chama a função com a data de hoje
+            });
+        });
+
+    </script>
+}
+

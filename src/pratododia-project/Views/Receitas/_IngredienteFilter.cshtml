@@ -1,0 +1,9 @@
+﻿@model List<pratododia_project.Models.Ingrediente>
+
+@foreach (var ing in Model)
+{
+    <div IdIngrediente="@ing.IdIngrediente" class="ingredient btn btn-outline-secondary d-flex flex-row justify-content-center align-content-between p-2">
+        <div IdIngrediente="@ing.IdIngrediente">@ing.Nome</div>
+
+    </div>
+}

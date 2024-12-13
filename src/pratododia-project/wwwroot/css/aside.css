@@ -1,0 +1,187 @@
+﻿.splitter {
+    width: 2px;
+    height: 100%;
+    background-color: var(--lighterGrey);
+}
+
+.recipeAside {
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    min-height: 160px;
+    max-height: 160px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12)
+}
+
+.cardSchedule {
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.calendarImg {
+    overflow: hidden;
+    width: 120px;
+    max-height: 100%;
+    max-width: 100%;
+}
+.calendarImg img {
+    height: 100%;
+    max-height: 100%;
+    width: 200px;
+}
+.asideImg {
+    overflow: hidden;
+    width: 200px;
+    min-height: 160px;
+    max-height: 100%;
+    max-width: 100%;
+}
+
+    .asideImg img {
+        height: 100%;
+        min-height: 160px;
+        max-height: 100%;
+        width: 200px;
+    }
+
+img, svg {
+    vertical-align: top;
+}
+
+.cardsDiv {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex-grow: 1;
+}
+
+.recipeText {
+    grid-area: recipeText;
+    justify-content: space-between;
+}
+
+.genericButton {
+    flex-grow: 1;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 5px 15px;
+    border: 1px solid var(--lightGrey);
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+    .genericButton:hover {
+        color: var(--darkBlue);
+        border: 1px solid var(--blue);
+        box-shadow: 0 0 10px 5px rgba(21, 150, 255, 0.2);
+    }
+
+.buttonActive {
+    cursor: default;
+    background-color: var(--blue);
+    border: 1px solid var(--blue);
+    color: white;
+}
+
+    .buttonActive:hover {
+        border: 1px solid var(--blue);
+        color: white;
+        box-shadow: 0;
+    }
+
+    .addRecipe {
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px 0px var(--grey);
+    width: 200px;
+    height: 60px;
+    transition: 0.3s;
+    border: none;
+    justify-content: center;
+    gap: 5px;
+
+    text-decoration: none;
+}
+
+/*Pop-up remove*/
+#removePopUp {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+#popUp {
+    z-index: 999;
+    background-color: white;
+    border-radius: 10px;
+}
+
+#remPopUp {
+    z-index: 999;
+    background-color: white;
+    border-radius: 10px;
+}
+
+#cancelBtn {
+    cursor: pointer;
+    border: none;
+    background-color: white;
+    transition: 0.2s ease;
+    padding: 10px;
+}
+
+    #cancelBtn:hover {
+        background-color: var(--lightGrey);
+    }
+
+
+@media screen and (max-width: 640px) {
+    .recipeAside {
+        border-radius: 8px;
+        overflow: hidden;
+        width: 100%;
+        min-height: 320px;
+        max-height: 350px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        grid-template-areas: 
+            "img img"
+            "info button";
+    }
+
+    .asideImg {
+        grid-area: img;
+    }
+
+    .asideImg {
+        overflow: hidden;
+        width: 100%;
+        min-height: 160px;
+        max-height: 160px;
+        max-width: 100%;
+    }
+
+        .asideImg img {
+            min-height: 160px;
+            max-height: 160px;
+            width: 100%;
+        }
+
+
+    .recipeText {
+        grid-area: info;
+        justify-content: center;
+    }
+
+    .buttons-div {
+        grid-area: button;
+    }
+
+}

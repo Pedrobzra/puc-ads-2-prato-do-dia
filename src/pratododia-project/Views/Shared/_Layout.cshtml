@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Prato do Dia</title>
+    <link rel="stylesheet" href="~/css/modules/render.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/modules/root.css" asp-append-version="true" />
+    @if (!ViewData["NoBootstrap"]?.Equals(true) ?? true)
+    {
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    }
+
+    @RenderSection("Styles", required: false)
+</head>
+<body class="f-column">
+    @if (ViewBag.ShowHeader != false)
+    {
+        <header>
+            <div id="containerHeader">
+                <a id="logoHeader" asp-action="Index" asp-controller="Home">
+                    <img src="~/img/extendedLogoWhite.png" alt="Logo" id="imgLogo" />
+                    <img src="~/img/shortLogo.png" alt="Logo" id="imgShortLogo">
+                </a>
+                <div id="searchBar">
+                    <input type="text" id="searchInput" placeholder="Busque por receitas!" name="nomeReceita" value="@ViewBag.NomeReceita">
+                    <button id="submitBtn" type="submit" style="background: none; border: none; cursor: pointer;">
+                        <img src="~/img/icons/search.png" alt="Search" id="searchIcon">
+                    </button>
+                </div>
+                <div id="pagesBtns">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div class="dropdown">
+
+                            <button class="icon-large d-flex flex-column align-items-center" data-bs-toggle="dropdown" type="button" id="btnPage" style="border:none; filter: invert()">
+                               <img src="~/img/icons/menu-hamburguer.png"/>
+                            </button>
+
+
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item d-flex flex-row justify-content-between gap-3" asp-area="" asp-controller="Home" asp-action="Index">
+                                        Página Inicial
+                                        <div class="icon-regular">
+                                            <img src="~/img/icons/casa.png" />
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex flex-row justify-content-between gap-3" asp-area="" asp-controller="Receitas" asp-action="MinhasReceitas">
+                                        Minhas Receitas
+                                        <div class="icon-regular">
+                                            <img src="~/img/icons/addreceita.png" />
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex flex-row justify-content-between gap-3" asp-area="" asp-controller="Usuarios" asp-action="Profile">
+                                        Meu Perfil
+                                        <div class="icon-regular">
+                                            <img src="~/img/icons/User.png" />
+                                        </div>
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></hr></li>
+                                <li>
+                                    <form>
+                                        <a class="dropdown-item d-flex flex-row justify-content-between gap-3" id="exitBtn" asp-area="" asp-controller="Usuarios" asp-action="Logout" style="border:none;">
+                                            Sair
+                                            <div class="icon-regular">
+                                                <img src="~/img/icons/exit.png" />
+                                            </div>
+                                        </a>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="lineDiv">
+                            <a id="btnPage" class="btn" asp-area="" asp-controller="Usuarios" asp-action="Login">Entrar</a>
+                            <div id="lineBtn"></div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </header>
+    }
+    <div class="grow-1 f-column">
+        @RenderBody()
+    </div>
+    <footer><p id="copyrightTerms">© 2024 PratoDoDia. Todos os direitos reservados.</p></footer>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+﻿@model pratododia_project.ViewModels.UsuarioIngredienteViewModel
+
+<div class="row">
+    <div class="col-md-4 flex-grow-1">
+        <form asp-action="Edit" enctype="multipart/form-data" class="d-flex flex-column">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Usuario.IdUsuario" />
+            <div class="form-group my-3 rounded-circle align-self-center d-flex justify-content-center align-items-center w-100" style="max-width: 180px;height: 180px">
+                <img class="w-100 h-100 " src="~/@Model.Usuario.CaminhoImg" style="object-fit: cover;object-position: center;border-radius: 90px;">
+            </div>
+            <div class="d-flex justify-content-center align-items-center">
+                <label for="formFileSm" class="form-label"></label>
+                <input class="form-control" id="receita-image" name="file" type="file" accept="image/jpeg, image/png, image/jpg">
+                <input type="hidden" asp-for="Usuario.CaminhoImg" value="@Model.Usuario.CaminhoImg" />
+            </div>
+            <div class="form-floating mt-3 mb-3">
+                <input asp-for="Usuario.NomeUsuario" class="form-control" placeholder="Nome" value="@Model.Usuario.NomeUsuario" />
+                <label asp-for="Usuario.NomeUsuario" class="control-label">Nome</label>
+                <span asp-validation-for="Usuario.NomeUsuario" class="text-danger"></span>
+            </div>
+            <div class="form-floating mt-3 mb-3">
+                <input asp-for="Usuario.Email" class="form-control" placeholder="Email" value="@Model.Usuario.Email" />
+                <label asp-for="Usuario.Email" class="control-label"></label>
+                <span asp-validation-for="Usuario.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating mt-3 mb-3">
+                <input asp-for="Usuario.Senha" class="form-control" placeholder="Senha"/>
+                <label asp-for="Usuario.Senha" class="control-label"></label>
+                <span asp-validation-for="Usuario.Senha" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex flex-row justify-content-end my-3 gap-3">
+                <a class="btn btn-outline-danger" asp-action="Profile">Cancelar</a>
+                <button class="btn btn-outline-success" type="submit" >Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

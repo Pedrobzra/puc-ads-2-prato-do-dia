@@ -1,0 +1,343 @@
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("modules/root.css");
+
+
+main {
+    display: grid;
+    grid-template-areas:
+        "ingredients recipes";
+    grid-template-columns: 35% 65%;
+    align-self: center
+}
+
+/* -------------LEFT-------------- */
+#ingredientsSection {
+    grid-area: ingredients;
+    width: 100%;
+}
+
+#myIngredients {
+    width: 80%;
+
+    input {
+        width: 95%;
+        border-radius: 7px;
+        border: 1px solid var(--lighterGrey);
+        outline: none;
+    }
+
+}
+
+#searchIngredients::placeholder {
+    padding: 10px;
+    color: var(--grey);
+}
+
+#allSelectedIngredients {
+    flex-wrap: wrap;
+}
+
+.selectedIngredient {
+    display: flex;
+    height: 27px;
+    align-content: center;
+    border-radius: 7px;
+    background: var(--blue);
+    color: white;
+
+    box-shadow: 0px 0px 20px 0px var(--lighterGrey);
+
+    button {
+        height: 27px;
+        width: 27px;
+        border: none;
+        background: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        img {
+            width: 20px;
+            height: 20px;
+            filter: invert(1);
+        }
+    }
+}
+
+.ingredient {
+    height: 27px;
+    border: 1px solid var(--lighterGrey);
+    border-radius: 7px;
+}
+
+.ingredient:hover {
+    border: 1px solid var(--blue);
+    transition: 0.3s;
+}
+
+#typeOfIngredients {
+    padding-left: 40px;
+    padding-right: 20px;
+    width: 100%;
+}
+
+.collapsed img {
+    transform: rotate(-90deg);
+}
+
+.buttonCollapse {
+    border: none;
+    background: none;
+    text-decoration: none;
+    transition: 0.3s ease-in-out;
+    border-radius: 5px;
+}
+
+.buttonCollapse:hover {
+    background-color: var(--lighterGrey);
+}
+
+.openMyIngredients {
+    display: none;
+}
+
+.createIng {
+    max-width: 80%;
+    color: black;
+    font-weight: 600;
+
+    height: 40px;
+    width: 100%;
+
+    border-radius: 5px;
+    border: none;
+    background: none;
+    transition: 0.3s;
+}
+
+.createIng:hover {
+    background: var(--lighterGrey);
+}
+
+/* -------------RIGHT-------------- */
+#recipesSection {
+    grid-area: recipes;
+    padding-left: 20px;
+}
+
+#categories {
+    height: 100px;
+    overflow: auto;
+    justify-content: flex-start;
+}
+
+#categories::-webkit-scrollbar {
+    display: none;
+}
+
+/* vertical row */
+.vr {
+    color: var(--Grey);
+    align-self: center;
+    height: 50px;
+}
+
+.filters {
+    width: max-content;
+    height: 50px;
+    border: 1px solid var(--lighterGrey);
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+.filters:hover {
+    border-color: var(--blue);
+    transition: 0.3s;
+}
+
+#recipesMenu {
+    flex-wrap: wrap;
+}
+
+.recipes {
+    width: auto;
+    display: grid;
+    grid-template-areas: "img desc";
+    grid-template-columns: 30% 70%;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.25);
+    transition: 0.1s;
+}
+
+.recipes:hover {
+    background-color: var(--lighterGrey);
+    scale: 1.01;
+}
+
+.asideImg {
+    grid-area: img;
+    overflow: hidden;
+
+    img {
+        max-height: 100%;
+    }
+}
+
+#desc {
+    grid-area: desc;
+}
+
+#tit {
+    font-size: x-large;
+}
+
+#ingredientsRecipe {
+    font-size: 15px;
+}
+
+.recipeAttributes {
+    color: var(--grey);
+}
+
+/* Add Recipe */
+.addRecipe {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px 0px var(--grey);
+    position: fixed;
+    width: 200px;
+    height: 60px;
+    right: 20px;
+    bottom: 40px;
+    transition: 0.3s;
+    border: none;
+    justify-content: space-between;
+}
+
+.addRecipe:hover {
+    scale: 1.04;
+}
+
+
+
+/* --------------RESPONSIVIDADE----------------- */
+
+@media (max-width: 960px) {
+    main {
+        max-width: 490px;
+        grid-template-areas:
+            "recipes";
+        grid-template-columns: 100%;
+    }
+
+    #recipesSection {
+        padding: 0 20px;
+    }
+
+    .openMyIngredients:hover {
+        scale: 1.04;
+        border: 2px solid white;
+    }
+
+    .openMyIngredients {
+        display: flex;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 2px 2px 10px 0px var(--grey);
+        width: 60px;
+        height: 60px;
+        position: fixed;
+        left: 20px;
+        bottom: 40px;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: 0.3s;
+        border: none;
+        z-index:99;
+    }
+}
+
+@media (max-width: 768px) {
+    #nextIcon {
+        display: none;
+    }
+}
+
+@media (max-width: 490px) {
+    main {
+        max-width: 320px;
+        grid-template-areas:
+            "recipes";
+        grid-template-columns: 100%;
+    }
+
+    #recipesSection {
+        padding: 0;
+    }
+
+    .recipe {
+        min-width: 250px !important;
+    }
+
+    .openMyIngredients:hover {
+        scale: 1.04;
+        border: 2px solid white;
+    }
+
+    .openMyIngredients {
+        display: flex;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 2px 2px 10px 0px var(--grey);
+        width: 60px;
+        height: 60px;
+        position: fixed;
+        left: 20px;
+        bottom: 40px;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: 0.3s;
+        border: none;
+    }
+}
+
+/* popup styles */
+.modal-ingredients {
+    position: fixed;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    top: 0;
+}
+
+.new-ingredients-tab{
+    width: 550px;
+    height: 370px;
+    background-color: white;
+    border-radius: 10px;
+}
+.inputsIngredient{
+    width: 200px;
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid var(--lighterGrey);
+    color: var(--grey);
+}
+.close-popup{
+    align-self: flex-end;
+}
+.sendIngredient{
+    border: 1px solid var(--lighterGrey);
+    background: none;
+    border-radius: 5px;
+    transition: 0.2s;
+    color: var(--grey);
+}
+.sendIngredient:hover{
+    background-color: var(--blue);
+    color: white;
+}

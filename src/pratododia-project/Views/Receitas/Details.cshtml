@@ -1,0 +1,838 @@
+﻿@using System.Security.Claims
+@model pratododia_project.ViewModels.ReceitaVM
+@{
+    ViewData["Title"] = @Html.DisplayFor(model => model.Receita.NomeReceita);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/details.css">
+    <style>
+        img, svg {
+            vertical-align: top;
+        }
+
+    </style>
+}
+
+<div id="content" class="f-row jus-center grow-1">
+    <div id="container">
+        <main class="recipeContainer p-large f-column gap-large">
+            <div class="d-block d-sm-flex">
+                <div class="grow-1">
+                    <div class="title" id="recipeName" title="Nome da Receita">@Html.DisplayFor(model => model.Receita.NomeReceita)</div>
+                    <div>
+                        Por <span id="recipeAuthorName">
+                            @Html.DisplayFor(model => model.Receita.Usuario.NomeUsuario)
+                        </span>
+                    </div>
+                    <div class="f-row ali-center gap-small">
+                        <div class="icon-small">
+                            <img src="~/img/icons/rating.png" />
+                        </div>
+                        <span id="ratingNote">
+                            @if (Model.Receita.Avaliacao != 0)
+                            {
+                                @Model.Receita.Avaliacao.ToString("F1")
+                            }
+                            else
+                            {
+                                if (User.Identity.IsAuthenticated)
+                                {
+                                    <a href="#rateHere">Seja o primeiro a avaliar!</a>
+                                }
+                                else
+                                {
+                                    <span>Realize <a asp-action="Login" asp-controller="Usuarios">login</a> para avaliar!</span>
+                                }
+                            }
+                        </span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end flex-row gap-regular">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (Model.Receita.IdUsuario == int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)) || Model.Usuario.IsAdmin)
+                        {
+                            <button class="icon-xlarge" id="removeBtn">
+                                <img src="~/img/icons/remove.png" />
+                            </button>
+                            <button data-recipeId="@Model.Receita.IdReceita" class="icon-xlarge" id="editBtn">
+                                <img src="~/img/icons/edit.png" />
+                            </button>
+                        }
+                    }
+
+                    <button id="scheduleRecipeButton" class="icon-xlarge">
+                        <img id="scheduleRecipeIcon" src="~/img/icons/schedule.png" />
+                    </button>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        @if (Model.eSalva)
+                        {
+                            <button id="saveRecipeButton" data-receita-id="@Model.Receita.IdReceita" class="icon-xlarge">
+                                <img id="saveRecipeIcon" src="~/img/icons/saved.png" />
+                            </button>
+                        }
+                        else
+                        {
+                            <button id="saveRecipeButton" data-receita-id="@Model.Receita.IdReceita" class="icon-xlarge">
+                                <img id="saveRecipeIcon" src="~/img/icons/save.png" />
+                            </button>
+                        }
+                    }
+                    else
+                    {
+                        <button class="icon-xlarge" id="fakeSaveRecipeButton">
+                            <img src="~/img/icons/save.png" />
+                        </button>
+                    }
+                </div>
+            </div>
+            <div id="recipeDescriptionContainer" class="f-column gap-large">
+                @if (Model.Receita.CaminhoImg != "img\\semImagem.png")
+                {
+                    <div class="form-group align-self-center d-flex justify-content-center align-items-center w-100" style="min-width: 300px;height: 300px">
+                        <img class="w-100 h-100 " src="~/@Model.Receita.CaminhoImg" style="object-fit: cover;object-position: center; border-radius:10px">
+                    </div>
+                }
+                <div class="f-row ali-center">
+                    <div class="grow-1 f-column gap-large">
+                        <div id="descriptionText" class="grow-1">
+                            @Html.DisplayFor(model => model.Receita.Descricao)
+                        </div>
+                        <div id="recipeAttributes" class="d-flex flex-column flex-md-row justify-content-evenly gap-large" style="background-color: #f8f9fa; padding:10px; border-radius: 10px">
+                            <div class="f-row gap-small">
+                                <div class="icon-regular">
+                                    <img class="icon-small" src="~/img/icons/difficulty.png" />
+                                </div>
+                                <div>
+                                    Dificuldade:
+                                    <span class="bold" id="difficulty">
+                                        @Html.DisplayFor(model => model.Receita.Dificuldade)
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="f-row gap-small">
+                                <div class="icon-regular">
+                                    <img class="icon-small" src="~/img/icons/clock.png" />
+                                </div>
+                                <div>
+                                    Tempo:
+                                    <span class="bold" id="preparationTime">
+                                        @Model.Receita.TempoPreparo.TotalMinutes
+
+                                    </span>
+                                    min
+                                </div>
+                            </div>
+                            <div class="f-row gap-small">
+                                <div class="icon-regular">
+                                    <img class="icon-small" src="~/img/icons/yield.png" />
+                                </div>
+                                <div>
+                                    Rendimento:
+                                    <span class="bold" id="yield">
+                                        @Html.DisplayFor(model => model.Receita.Rendimento)
+                                    </span>
+                                    porções
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="f-column gap-large">
+
+                <div class="subtitle" style="padding:10px; border-radius: 10px;">
+                    <hr>
+                    Ingredientes
+                </div>
+
+                <div>
+                    <div class="m-0 d-flex flex-column flex-xl-row gap-regular flex-wrap" id="ingredientsUl">
+                        @foreach (var i in Model.Ingredientes)
+                        {
+                            <div style="min-width:49%;background-color: #f8f9fa; padding:10px; border-radius: 10px">
+                                <strong>@i.Quantidade <span class="tipoIngrediente">@i.Tipo</span></strong> de <span>@i.Ingrediente.Nome</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="f-column gap-large">
+                <div class="subtitle" style="padding:10px; border-radius: 10px;">
+                    <hr>
+                    Preparo
+                </div>
+                <ol class="m-0 f-column gap-regular" id="stepsOl">
+                    @foreach (var Passo in Model.Receita.Passos)
+                    {
+                        <li style="background-color: #f8f9fa; padding:10px; border-radius: 10px">@Passo</li>
+                    }
+                </ol>
+            </div>
+            <div id="categorySection" class="f-row gap-large p-large">
+                <h2 class="subtitle">Categoria:</h2>
+                <div class="category" rcategory="@Model.Receita.Categoria">
+                    @Model.Receita.Categoria
+                </div>
+            </div>
+            <div>
+                <div class="subtitle f-column jus-center ali-center gap-regular">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        @if (Model.MinhaNota == 0)
+                        {
+                            <span id="rateHere">
+                                Avalie esta Receita!
+                            </span>
+                        }
+                        else
+                        {
+                            <span>
+                                Trocar avaliação da receita
+                            </span>
+                        }
+                        <div id="starsRating" class="f-row">
+                            <img src="~/img/icons/star.png"
+                                 id="star1"
+                                 class="star c-pointer" />
+                            <img src="~/img/icons/star.png"
+                                 id="star2"
+                                 class="star c-pointer" />
+                            <img src="~/img/icons/star.png"
+                                 id="star3"
+                                 class="star c-pointer" />
+                            <img src="~/img/icons/star.png"
+                                 id="star4"
+                                 class="star c-pointer" />
+                            <img src="~/img/icons/star.png"
+                                 id="star5"
+                                 class="star c-pointer" />
+                        </div>
+                        <button data-receita-id="@Model.Receita.IdReceita" type="button" id="submitRate">Enviar</button>
+                    }
+                    else
+                    {
+                        <p><a asp-controller="Usuarios" asp-action="Create">Registre-se</a> para avaliar e comentar!</p>
+                    }
+                </div>
+            </div>
+            <div class="f-column gap-regular">
+                <div id="counterSorter" class="f-row gap-regular jus-center">
+                    <h2 id="nComments" class="subtitle"> Comentários (@Model.Comentarios.Count)</h2>
+                    @* <div class="f-row gap-small">
+                    Ordernar por:
+                    <select name="commentSorter" id="commentSorter">
+                    <option value="mostLiked">Mais curtidos</option>
+                    <option value="recent">Recentes</option>
+                    </select>
+                    </div> *@
+                </div>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <form method="post" class="p-regular f-column gap-small" asp-action="AddComment" asp-route-idReceita="@Model.Receita.IdReceita">
+                        <div class="f-row gap-small">
+                            <div class="userProfPic">
+                                <img src="~/@Model.Usuario.CaminhoImg"
+                                     alt=""
+                                     width="100%"
+                                     height="100%" />
+                            </div>
+                            <textarea id="commentText"
+                                      name="texto"
+                                      class="autoResize grow-1 p-regular"
+                                      placeholder="Escreva seu comentário"
+                                      required maxlength="512"></textarea>
+                        </div>
+                        <div class="f-row-reverse">
+                            <button type="submit" id="postComment" class="validComment">
+                                Comentar
+                            </button>
+                        </div>
+                    </form>
+                }
+                <div class="comments f-column gap-regular">
+                    @foreach (var comentario in Model.Comentarios)
+                    {
+                        <div class="comment p-regular f-row gap-small" >
+                            <div>
+                                <div class="userProfPic">
+                                    <img src="~/@comentario.Usuario.CaminhoImg" alt="" width="100%" height="100%" />
+                                </div>
+                            </div>
+                            <div class="comment-text f-column gap-small grow-1" style="background-color: #f8f9fa; padding:10px; border-radius: 10px">
+                                <div class="d-flex flex-row justify-content-between">
+                                    <p class="m-0 bold">@comentario.Usuario.NomeUsuario</p>
+                                    @if (User.IsInRole("True"))
+                                    {
+                                        <form asp-action="DeleteComment" method="post">
+                                            <input type="hidden" name="idReceita" value="@Model.Receita.IdReceita" />
+                                            <input type="hidden" name="id" value="@comentario.IdComentário" />
+                                            <button type="submit" class="icon-large" id="removeBtn"><img src="~/img/icons/remove.png" /></button>
+                                        </form>
+                                    }
+                                </div>
+                                
+                                <div>
+                                    @comentario.Texto
+                                </div>
+                               
+                                <div class="f-row ali-center gap-large wrap">
+                                    <div class="lightbold f-row ali-center gap-small">
+                                        <button class="likeButton p-small c-pointer">
+                                            <img src="~/img/icons/like.png" width="100%" height="100%" class="likeIcon" />
+                                        </button>
+                                        <span>@comentario.NumCurtidas</span>
+                                    </div>
+                                    @if (comentario.RespostasComentario != null && comentario.RespostasComentario.Any())
+                                    {
+                                        <button class="showAnswers f-row gap-regular jus-center ali-center btn-expand" isexpanded="false" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@comentario.IdComentário">
+                                            <div class="icon-small">
+                                                <img src="~/img/icons/toggleArrow.png" alt="" />
+                                            </div>
+                                            <div>@comentario.RespostasComentario.Count Respostas</div>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        if (User.Identity.IsAuthenticated)
+                                        {
+                                            <button class="showAnswers f-row gap-regular jus-center ali-center btn-expand" isexpanded="false" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@comentario.IdComentário">
+
+                                                <div style="color: var(--bs-body-color);">Responder</div>
+                                            </button>
+                                        }
+                                    }
+                                </div>
+                                <div class="answers f-column gap-regular collapse" id="collapse-@comentario.IdComentário">
+                                    @if (comentario.RespostasComentario?.Any() == true)
+                                    {
+                                        @foreach (var resposta in comentario.RespostasComentario)
+                                        {
+                                            <div class="answer f-row gap-regular">
+                                                <div class="userProfPic">
+                                                    <img src="~/@resposta.Usuario.CaminhoImg"
+                                                         alt=""
+                                                         width="100%"
+                                                         height="100%" />
+                                                </div>
+                                                <div class="comment f-column gap-small w-100">
+                                                    <div class="d-flex flex-row justify-content-between">
+                                                        <p class="m-0 bold">@resposta.Usuario.NomeUsuario</p>
+                                                        @if (User.IsInRole("True"))
+                                                        {
+                                                            <form asp-action="DeleteRespostaComentario" method="post">
+                                                                <input type="hidden" name="idReceita" value="@Model.Receita.IdReceita" />
+                                                                <input type="hidden" name="id" value="@resposta.IdResposta" />
+                                                                <button type="submit" class="icon-large" id="removeBtn"><img src="~/img/icons/remove.png" /></button>
+                                                            </form>
+                                                        }
+                                                    </div>
+                                                    <div class="wb-break-all">
+                                                        @resposta.Texto
+                                                    </div>
+                                                    <div class="f-row ali-center gap-large">
+                                                        <div class="lightbold f-row ali-center gap-small">
+                                                            <button class="likeButton p-small c-pointer">
+                                                                <img src="~/img/icons/like.png"
+                                                                     width="100%"
+                                                                     height="100%"
+                                                                     class="likeIcon" />
+                                                            </button>
+                                                            <span>10</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <form id="answerToComment" method="post" class="p-regular f-column gap-small" asp-action="AddRespostaComentario" asp-route-idComentario="@comentario.IdComentário">
+                                            <div class="f-row gap-small">
+                                                <div class="userProfPic">
+                                                    <img src="~/@Model.Usuario.CaminhoImg"
+                                                         alt=""
+                                                         width="100%"
+                                                         height="100%" />
+                                                </div>
+                                                <textarea id="commentText"
+                                                          name="texto"
+                                                          class="autoResize grow-1 p-regular"
+                                                          placeholder="Escreva sua resposta"
+                                                          required maxlength="512"></textarea>
+                                                <input type="hidden"
+                                                       name="idReceita"
+                                                       value="@Model.Receita.IdReceita" />
+                                            </div>
+                                            <div class="f-row-reverse">
+                                                <button type="submit" id="postAnswer" class="validAnswer">
+                                                    Responder
+                                                </button>
+                                            </div>
+                                        </form>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </main>
+
+        <!------------Aside-------------->
+
+        <aside class="p-large grow-1 f-column gap-large">
+            <div class="subtitle"> Outras Receitas</div>
+            <div class="f-row gap-regular jus-center">
+                <button class="genericButton buttonActive" id="btnMaisVistas"> Mais Acessadas </button>
+                <button class="genericButton " id="btnMaisComentadas"> Mais Comentadas </button>
+                <button class="genericButton" id="btnMaisNotas"> Melhores Notas </button>
+            </div>
+
+            <div class="cardsDiv" id="receitasMaisVistas">
+                @foreach (var receita in Model.ReceitaMaisVistas)
+                {
+                    if (receita.IdReceita != Model.Receita.IdReceita)
+                    {
+                        <section class="recipeAside f-row c-pointer" idreceita="@receita.IdReceita">
+                            <div class="asideImg f-row ali-center">
+                                <img src="~/@receita.CaminhoImg" />
+                            </div>
+                            <div class="recipeText p-regular grow-1 f-column">
+                                <div class="bold">@receita.NomeReceita</div>
+                                <div class="recipeAttributes f-column gap-small">
+                                    <div class="f-row ali-center gap-regular">
+                                        <div class="icon-regular">
+                                            <img src="~/img/icons/difficulty.png" />
+                                        </div>
+                                        <span class="attributeValue">@receita.Dificuldade</span>
+                                    </div>
+                                    <div class="f-row ali-center gap-regular">
+                                        <div class="icon-regular">
+                                            <img src="~/img/icons/clock.png" />
+                                        </div>
+                                        <span class="attributeValue">
+                                            @receita.TempoPreparo
+                                        </span>
+                                    </div>
+                                    <div class="f-row ali-center gap-regular">
+                                        <div class="icon-regular">
+                                            <img src="~/img/icons/rating.png" />
+                                        </div>
+                                        <span class="attributeValue">@receita.Avaliacao.ToString("F1")</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    }
+                }
+            </div>
+            <div class="cardsDiv" id="receitasMaisComentadas">
+                @foreach (var receita in Model.ReceitaMaisComentadas)
+                {
+                    if (receita.IdReceita != Model.Receita.IdReceita)
+                    {
+                        <section class="recipeAside d-flex flex-column flex-md-row c-pointer" idreceita="@receita.IdReceita">
+                            <div class="asideImg f-row ali-center">
+                                <img src="~/@receita.CaminhoImg" />
+                            </div>
+                            <div class="recipeText p-regular grow-1 f-column">
+                                <div class="bold">@receita.NomeReceita</div>
+                                <div class="recipeAttributes f-column gap-small">
+                                    <div class="f-row ali-center gap-regular">
+                                        <div class="icon-regular">
+                                            <img src="~/img/icons/difficulty.png" />
+                                        </div>
+                                        <span class="attributeValue">@receita.Dificuldade</span>
+                                    </div>
+                                    <div class="f-row ali-center gap-regular">
+                                        <div class="icon-regular">
+                                            <img src="~/img/icons/clock.png" />
+                                        </div>
+                                        <span class="attributeValue">
+                                            @receita.TempoPreparo
+                                        </span>
+                                    </div>
+                                    <div class="f-row ali-center gap-regular">
+                                        <div class="icon-regular">
+                                            <img src="~/img/icons/rating.png" />
+                                        </div>
+                                        <span class="attributeValue">@receita.Avaliacao.ToString("F1")</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    }
+                }
+            </div>
+            <div class="cardsDiv" id="receitasMaisNotas">
+                @foreach (var receita in Model.ReceitaMaisAvaliadas)
+                {
+                    if (receita.IdReceita != Model.Receita.IdReceita)
+                    {
+                        <section class="recipeAside f-row c-pointer" idreceita="@receita.IdReceita">
+                            <div class="asideImg f-row ali-center">
+                                <img src="~/@receita.CaminhoImg" />
+                            </div>
+                            <div class="recipeText p-regular grow-1 f-column">
+                                <div class="bold">@receita.NomeReceita</div>
+                                <div class="recipeAttributes f-column gap-small">
+                                    <div class="f-row ali-center gap-regular">
+                                        <div class="icon-regular">
+                                            <img src="~/img/icons/difficulty.png" />
+                                        </div>
+                                        <span class="attributeValue">@receita.Dificuldade</span>
+                                    </div>
+                                    <div class="f-row ali-center gap-regular">
+                                        <div class="icon-regular">
+                                            <img src="~/img/icons/clock.png" />
+                                        </div>
+                                        <span class="attributeValue">
+                                            @receita.TempoPreparo
+                                        </span>
+                                    </div>
+                                    <div class="f-row ali-center gap-regular">
+                                        <div class="icon-regular">
+                                            <img src="~/img/icons/rating.png" />
+                                        </div>
+                                        <span class="attributeValue">@receita.Avaliacao.ToString("F1")</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    }
+                }
+            </div>
+        </aside>
+    </div>
+</div>
+<form method="post" id="schedulePopUp" asp-controller="Receitas" asp-action="PlanRecipe" class="f-row jus-center ali-center">
+    <input type="hidden" name="idReceita" value="@Model.Receita.IdReceita" />
+    <div id="popUp" class="p-large f-column gap-large">
+        <div class="f-row gap-large">
+            <div class="subtitle grow-1">Planejar Receita</div>
+            <div class="icon-large">
+                <img class="closePopUp" src="~/img/icons/x.png" alt="X" />
+            </div>
+        </div>
+        <div class="f-row gap-large">
+            <div class="f-row grow-1">
+                <input type="date" name="data" id="scheduleDate" />
+            </div>
+            <button type="submit" class="btn-primary">Planejar</button>
+        </div>
+    </div>
+</form>
+<form asp-action="DeletarReceita" method="post" id="removePopUp" class="f-row jus-center ali-center">
+    <input type="hidden" name="id" value="@Model.Receita.IdReceita" />
+    <input type="hidden" name="returnPage" value="Details" />
+    <div id="remPopUp" class="p-large f-column gap-large">
+        <div class="f-row gap-large align-items-center">
+            <div class="subtitle grow-1">Remover Receita?</div>
+            <div class="icon-large">
+                <img class="closePopUp" src="~/img/icons/x.png" alt="X" />
+            </div>
+        </div>
+        <p>Você não poderá desfazer essa ação. </p>
+        <div class="f-row gap-large justify-content-between">
+            <button type="button" id="cancelBtn" class="closePopUp">Cancelar</button>
+            <button type="submit" data-recipeId="@Model.Receita.IdReceita" class="icon-xlarge" id="removeBtn" style="width: fit-content">Remover</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script defer>
+        //Save Recipe
+        $('#saveRecipeButton').click(function () {
+            let receitaId = $(this).data('receita-id');
+            $('#saveRecipeButton').prop('disabled', true);
+            document.body.style.cursor = "wait";
+            $('#saveRecipeButton').css("cursor", "wait")
+
+            $.ajax({
+                url: '@Url.Action("SaveRecipe", "Receitas")',
+                type: 'POST',
+                data: { idReceita: receitaId },
+                success: function (response) {
+                    if (response.success) {
+                        var imgSrc = (response.action === "saved")
+                            ? '@Url.Content("~/img/icons/saved.png")'
+                            : '@Url.Content("~/img/icons/save.png")';
+                        $('#saveRecipeIcon').attr('src', imgSrc);
+                    }
+                },
+                error: function () {
+                    alert('Erro ao tentar salvar/remover a receita');
+                },
+                complete: function () {
+                    $("#saveRecipeButton").prop('disabled', false);
+                    document.body.style.cursor = "default"
+                    $('#saveRecipeButton').css("cursor", "default")
+                }
+            });
+        });
+
+        // Rate Recipe Stars
+        let starsRating = document.getElementById("starsRating");
+        let starsArray = Array.from(document.getElementsByClassName("star"));
+        let submitRate = document.getElementById("submitRate");
+        let rate;
+        let wasStarClicked = false
+        if (starsRating) {
+            document.getElementById("starsRating").onmouseleave = () => {
+                if (!wasStarClicked) {
+                    if (@Model.MinhaNota == undefined) {
+                        for (i = 0; i < 5; i++) {
+                            starsArray[i].src = "/img/icons/star.png";
+                        }
+                    } else {
+                        for (i = 0; i < 5; i++) {
+                            starsArray[i].src = "/img/icons/star.png";
+                        }
+                        for (i = 0; i < @Model.MinhaNota; i++) {
+                            starsArray[i].src = "/img/icons/starFilled.png";
+                        }
+                    }
+                } else {
+                    for (i = 0; i < 5; i++) {
+                        starsArray[i].src = "/img/icons/star.png";
+                    }
+                    for (i = 0; i < rate; i++) {
+                        starsArray[i].src = "/img/icons/starFilled.png";
+                    }
+                }
+            }
+
+            // First Render
+            if (@Model.MinhaNota == undefined) {
+                for (i = 0; i < 5; i++) {
+                    starsArray[i].src = "/img/icons/star.png";
+                }
+            } else {
+                for (i = 0; i < 5; i++) {
+                    starsArray[i].src = "/img/icons/star.png";
+                }
+                for (i = 0; i < @Model.MinhaNota; i++) {
+                    starsArray[i].src = "/img/icons/starFilled.png";
+                }
+            }
+
+            starsArray.forEach((star) => {
+                star.onmouseenter = () => {
+                    starIndex = starsArray.indexOf(star) + 1;
+                    for (i = 0; i < 5; i++) {
+                        if (i < starIndex) {
+                            starsArray[i].src = "/img/icons/starFilled.png";
+                        } else {
+                            starsArray[i].src = "/img/icons/star.png";
+                        }
+                    }
+                    star.onclick = () => {
+                        wasStarClicked = true
+                        rate = starIndex;
+                        for (i = 0; i < rate; i++) {
+                            starsArray[i].src = "/img/icons/starFilled.png";
+                        }
+                        submitRate.type = "submit";
+                        submitRate.style.cursor = "pointer";
+                        submitRate.style.opacity = 1;
+                        submitRate.onclick = () => {
+                            for (i = 0; i < 5; i++) {
+                                starsArray[i].src = "/img/icons/star.png";
+                                localStorage.setItem("Nota: ", rate);
+                            }
+                            // Send Rate;
+                            let receitaId = $('#saveRecipeButton').data('receita-id');
+                            $('#submitRate').prop('disabled', true);
+                            $('#submitRate').css('cursor', "wait");
+                            document.body.style.cursor = "wait";
+
+                            $.ajax({
+                                url: "@Url.Action("RateRecipe", "Receitas")",
+                                type: "POST",
+                                data: { idReceita: receitaId, rateValue: rate },
+                                success: function (response) {
+                                    if (response.success) {
+                                        var msg = (response.action == "salvarNota") ? "Avaliação enviada!" : "Nota atualizada";
+                                        console.log(msg);
+                                    }
+                                },
+                                error: function () {
+                                    alert('Erro ao tentar salvar/remover a receita! Tente sair e entrar novamente em sua conta.');
+                                },
+                                complete: function () {
+                                    $('#submitRate').prop('disabled', false);
+                                    $('#submitRate').css('cursor', "default");
+                                    document.body.style.cursor = "default";
+                                    window.location.reload();
+                                }
+                            })
+                        };
+                    };
+                };
+            });
+        }
+
+
+        //Schedule Recipe
+        let scheduleIcon = document.getElementById("scheduleRecipeButton");
+        let schedulePopUp = document.getElementById("schedulePopUp");
+
+        scheduleIcon.onclick = () => {
+            schedulePopUp.style.display = "flex";
+        };
+
+        //Schedule Pop Up
+        let popUp = document.getElementById("popUp");
+        let closePopUp = document.querySelectorAll(".closePopUp");
+        closePopUp[0].onclick = () => {
+            schedulePopUp.style.display = "none";
+        };
+
+        document.onclick = (element) => {
+            if (
+                schedulePopUp.style.display == "flex" &&
+                element.target.id == schedulePopUp.id &&
+                element.target.id !== scheduleIcon.id
+            ) {
+                schedulePopUp.style.display = "none";
+            }
+        };
+
+        //Remove Recipe
+        let removeIcon = document.getElementById("removeBtn");
+        let removePopUp = document.getElementById("removePopUp");
+
+        removeIcon.onclick = () => {
+            removePopUp.style.display = "flex";
+        };
+
+        //Remove Pop Up
+        let remPopUp = document.getElementById("remPopUp");
+        closePopUp[1].onclick = () => {
+            removePopUp.style.display = "none";
+        };
+
+        document.onclick = (element) => {
+            if (
+                removePopUp.style.display == "flex" &&
+                element.target.id == removePopUp.id &&
+                element.target.id !== removeIcon.id
+            ) {
+                removePopUp.style.display = "none";
+            }
+        };
+        closePopUp[2].onclick = () => {
+            removePopUp.style.display = "none";
+        };
+
+        document.onclick = (element) => {
+            if (
+                removePopUp.style.display == "flex" &&
+                element.target.id == removePopUp.id &&
+                element.target.id !== removeIcon.id
+            ) {
+                removePopUp.style.display = "none";
+            }
+        };
+
+        // Edit Button
+        if ($("#editBtn").length) {
+            let editBtn = $("#editBtn");
+            editBtn.on("click", () => {
+                let id = editBtn.data("recipeid");
+                window.location.href = `/Receitas/Edit/${id}`;
+            });
+        }
+
+        //Fake Save Btn (Unlogged)
+        $("#fakeSaveRecipeButton").on("click", () => {
+            window.location.href = "/Usuarios/Login"
+        })
+
+        //AutoResize TextArea
+        function autoResize() {
+            const textareas = document.querySelectorAll('.autoResize');
+            textareas.forEach(textarea => {
+                textarea.style.height = 'auto';
+                textarea.style.height = (textarea.scrollHeight) + 'px';
+            });
+        }
+        document.querySelectorAll('.autoResize').forEach(textarea => {
+            textarea.addEventListener('input', autoResize);
+        });
+        window.addEventListener('load', autoResize);
+
+        //Aside Recipe Link
+
+        let asideRecipesLink = Array.from(document.querySelectorAll(".recipeAside"));
+        asideRecipesLink.forEach(recipe => {
+            let id = recipe.getAttribute("idreceita")
+            recipe.onclick = () => {
+                window.location.href = "/Receitas/Details/" + id
+            }
+        });
+
+        //Aside Filters
+        let buttons = document.querySelectorAll(".genericButton");
+        let divs = [
+            document.querySelector("#receitasMaisVistas"),
+            document.querySelector("#receitasMaisComentadas"),
+            document.querySelector("#receitasMaisNotas"),
+        ];
+
+        divs[0].style.display = 'flex';
+        divs.slice(1).forEach(div => div.style.display = 'none');
+
+        buttons.forEach((button, index) => {
+            button.addEventListener("click", () => {
+                divs.forEach(div => (div.style.display = 'none'));
+                divs[index].style.display = 'flex';
+                buttons.forEach(btn => btn.classList.remove("buttonActive"));
+                button.classList.toggle("buttonActive");
+            });
+        });
+
+        // Collapse Img
+        let collapseBtns = document.querySelectorAll('.btn-expand');
+        collapseBtns.forEach(btn => btn.onclick = () => toggleCollapseIcon(btn)); // Passando uma função anônima
+
+        function toggleCollapseIcon(btn) {
+            let isExpanded = btn.getAttribute('isexpanded');
+            let img = btn.querySelector('img')
+
+            img.style.transition = 'transform 0.3s ease';
+            if (isExpanded === 'true') {
+                img.style.transform = 'rotate(0deg)';
+                btn.setAttribute('isexpanded', 'false');
+                console.log('Retraindo...');
+            } else {
+                img.style.transform = 'rotate(90deg)';
+                btn.setAttribute('isexpanded', 'true');
+                console.log('Expandindo...');
+            }
+        }
+
+        //Category Link
+        let catDiv = document.querySelector('.category')
+        let catTextFix = catDiv.innerHTML;
+        catDiv.innerHTML = catTextFix.replaceAll('_', ' ')
+        catDiv.onclick = () => {
+            let categoryText = catDiv.getAttribute('rcategory');
+            window.location.href = '/Home/Index/?categoria=' + categoryText
+        }
+
+        let tipo = Array.from(document.getElementsByClassName("tipoIngrediente"))
+
+        tipo.forEach((t) => {
+            t.innerHTML = t.innerHTML.replaceAll("_", " ")
+        })
+
+
+    </script>
+}

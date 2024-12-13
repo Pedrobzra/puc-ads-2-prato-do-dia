@@ -1,0 +1,157 @@
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap");
+
+header {
+    height: 80px;
+    width: 100%;
+    background: linear-gradient(to right, var(--red), var(--orange));
+
+    display: flex;
+}
+
+#searchBar {
+    display: flex;
+    align-items: center;
+}
+
+#containerHeader {
+    width: 100%;
+    margin: 0 5%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#logoHeader {
+    padding: 0;
+    height: 80px;
+    display: flex;
+    border: none;
+    background-color: transparent;
+
+    display: flex;
+    align-items: center;
+}
+
+#imgLogo {
+    cursor: pointer;
+    height: 80px;
+    width: 314px;
+}
+
+#imgShortLogo {
+    cursor: pointer;
+    height: 80px;
+    width: 314px;
+    display:none;
+}
+
+#searchInput {
+    padding: 3px 20px;
+    font-size: 20px;
+    height: 40px;
+    width: 500px;
+    border: none;
+    border-radius: 20px;
+    outline: none;
+}
+
+#searchIcon {
+    padding: 0 10px;
+    height: 24px;
+    cursor: pointer;
+
+    filter: invert(1);
+}
+
+#pagesBtns {
+    display: flex;
+    flex-direction: column;
+}
+
+#lineBtn {
+    display: flex;
+    background-color: white;
+    height: 2px;
+    transform: scaleX(0);
+    transition: 0.2s ease;
+}
+
+.lineDiv:hover {
+    #lineBtn {
+    transform: scaleX(1);
+             }
+}
+
+#pagesBtns form {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 10px;
+}
+
+#btnPage {
+    cursor: pointer;
+    font-size: 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: transparent;
+    font-weight: 500;
+    color: white;
+    padding: 1px 1px;
+    transition: 0.3s;
+}
+
+
+#btnImg {
+    height: 40px;
+    filter: invert(1);
+    transition: 0.3s ease;
+}
+
+
+
+footer {
+    height: 80px;
+    width: 100%;
+    background: linear-gradient(to right, var(--red), var(--orange));
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#copyrightTerms {
+    color: white;
+    margin: 0;
+}
+
+@media (max-width: 1067px) {
+    #searchInput {
+        width: 400px;
+    }
+}
+
+@media (max-width: 960px) {
+    #imgLogo {
+        display: none;
+        
+    }
+
+    #imgShortLogo {
+        display: flex;
+        width: auto;
+        height: 100%;
+    }
+    #searchInput {
+        display: none;
+    }
+
+    #logoHeader {
+        flex-grow: 1;
+    }
+
+    #searchIcon {
+        display: none;
+    }
+}

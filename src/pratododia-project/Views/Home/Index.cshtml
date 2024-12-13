@@ -1,0 +1,402 @@
+﻿@model pratododia_project.ViewModels.IngredienteReceitaHomeViewModel;
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/index.css" />
+}
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script defer>
+
+        let recipes = Array.from(document.getElementsByClassName("recipes"));
+        let myIngredients = document.querySelector("#allSelectedIngredients");
+        let ingredientsOfCategory = Array.from(document.getElementsByClassName("ingredientsOfCategory"));
+        let listaIngredientes = JSON.parse(localStorage.getItem('IngredientesSelecionados')) || [];
+        atualizarFront()
+
+        //funcao generica de add ing
+        function adicionarIngrediente(ingredientName) {
+            if (!listaIngredientes.includes(ingredientName)) {
+                listaIngredientes.push(ingredientName);
+                localStorage.setItem('IngredientesSelecionados', JSON.stringify(listaIngredientes))
+                atualizarFront();
+            }
+        }
+        //funcao generica de remover ing
+        function removerIngrediente(ingredientName) {
+            const index = listaIngredientes.indexOf(ingredientName);
+
+            if (index > -1) {
+                listaIngredientes.splice(index, 1);
+                localStorage.setItem('IngredientesSelecionados', JSON.stringify(listaIngredientes));
+                atualizarFront();
+
+                ingredientsOfCategory.forEach((category) => {
+                    Array.from(category.children).forEach((child) => {
+                        const childName = child.querySelector(".ingredientName").innerText;
+
+                        if (childName === ingredientName) {
+                            child.style.background = "";
+                            child.style.color = "";
+                        }
+                    });
+                });
+            }
+        }
+        // att front-end geral
+        function atualizarFront() {
+            myIngredients.innerHTML = "";
+
+            listaIngredientes.forEach((ingredientName) => {
+                const selectedIngredient = document.createElement("div");
+                selectedIngredient.classList.add("selectedIngredient");
+                selectedIngredient.innerHTML = 
+                `
+                <p class="ingredientName p-horizontal-small">${ingredientName}</p>
+                <button><img class="removeIngredient" src="img/icons/x.png" alt=""></button>
+                `;
+
+                selectedIngredient.querySelector(".removeIngredient").onclick = () => {
+                    removerIngrediente(ingredientName);
+                };
+
+                myIngredients.appendChild(selectedIngredient);
+            });
+
+            const ingredientes = JSON.parse(localStorage.getItem('IngredientesSelecionados'));
+
+            $.ajax({
+                url: '/Home/Index',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ listaIngredientes: ingredientes }),
+                success: function (response) {
+                    $('#recipesMenu').html(response);
+                },
+                error: function (error) {
+                    console.error("Erro ao enviar os ingredientes: ", error);
+                }
+            });
+        }
+
+        // add no array pela categoria
+        ingredientsOfCategory.forEach((category) => {
+            Array.from(category.children).forEach((child) => {
+                child.onclick = () => {
+                    const ingredientName = child.querySelector(".ingredientName").innerText;
+                    adicionarIngrediente(ingredientName);
+                    child.style.background = "#3488ff";
+                    child.style.color = "white";
+                };
+            });
+        });
+
+        // barra de pesquisa de ingredientes
+        document.querySelector("#searchIngredients").oninput = function searchIngredient() {
+            let searchValue = this.value.toLowerCase();
+            let filteredIngredients = document.getElementById("filteredIngredients");
+            filteredIngredients.innerHTML = "";
+
+            if (searchValue === "") {
+                return;
+            }
+
+            // add no array pela busca
+            ingredientsOfCategory.forEach((category) => {
+                Array.from(category.children).forEach((child) => {
+                    let ingredientName = child.querySelector(".ingredientName").innerHTML.toLowerCase();
+
+                    if (ingredientName.includes(searchValue)) {
+                        let ingredientClone = child.cloneNode(true);
+                        let capitalizedIngredientName = ingredientName.charAt(0).toUpperCase() + ingredientName.slice(1);
+                        ingredientClone.onclick = () => {
+                            adicionarIngrediente(capitalizedIngredientName);
+                            child.style.background = "#3488ff";
+                            child.style.color = "white";
+                        };
+
+
+                        filteredIngredients.appendChild(ingredientClone);
+                    }
+                });
+            });
+
+            // remove do array
+            myIngredients.addEventListener("click", (ing) => {
+                if (ing.target.closest(".removeIngredient")) {
+                    const ingredientName = ing.target.closest(".selectedIngredient").querySelector(".ingredientName").innerText;
+                    removerIngrediente(ingredientName);
+                }
+            });
+        }
+
+        // RESPONSIVIDADE
+        ajustarIngredientes()
+        window.addEventListener("resize", ajustarIngredientes);
+
+        function ajustarIngredientes() {
+            const ingredientsSection = document.getElementById("ingredientsSection");
+            const offCanvasBody = document.getElementById("ingredientsOffCanvas");
+            const main = document.querySelector("main");
+
+            ingredientsSection.style.display = "none";
+
+            if (window.innerWidth <= 960) {
+                offCanvasBody.appendChild(ingredientsSection);
+                ingredientsSection.style.border = "none";
+            } else {
+                main.appendChild(ingredientsSection);
+                ingredientsSection.style.borderRight = "2px solid var(--lighterGrey)";
+            }
+            ingredientsSection.style.display = "flex";
+        }
+
+
+        // OUTROS
+
+        let categorias = Array.from(document.getElementsByClassName("categorias"))
+
+        categorias.forEach((categorias) => {
+            categorias.innerHTML = categorias.innerHTML.replaceAll("_", " ")
+        })
+
+        let restricao = Array.from(document.getElementsByClassName("rest"))
+
+        restricao.forEach((rest) => {
+            rest.innerHTML = rest.innerHTML.replaceAll("_", " ")
+        })
+
+        let categoria = Array.from(document.getElementsByClassName("categoria"))
+
+        categoria.forEach((cat) => {
+            cat.innerHTML = cat.innerHTML.replaceAll("_", " ")
+        })
+
+        let filtersValue = Array.from(document.getElementsByClassName("filtersValue"))
+
+        filtersValue.forEach((filt) => {
+            filt.innerHTML = filt.innerHTML.replaceAll("_", " ")
+        })
+
+        var categories = document.getElementById("categories");
+        const nextIcon = document.getElementById("nextIcon");
+        const prevIcon = document.getElementById("prevIcon");
+        function avancarCategorias() {
+            const currentJustify = categories.style.justifyContent || "flex-start";
+
+            if (currentJustify === "flex-start") {
+                categories.style.justifyContent = "center";
+                prevIcon.style.display = "flex";
+            } else if (currentJustify === "center") {
+                categories.style.justifyContent = "flex-end";
+                nextIcon.style.display = "none"
+            }
+        }
+
+        function voltarCategorias() {
+            if (categories.style.justifyContent === "center") {
+                categories.style.justifyContent = "flex-start"
+                prevIcon.style.display = "none";
+            } else if (categories.style.justifyContent === "flex-end") {
+                categories.style.justifyContent = "center";
+                nextIcon.style.display = "flex";
+            }
+        }
+
+        //AJAX INGREDIENTE CREATE
+        $(document).ready(function () {
+            $('#submit-button').click(function (e) {
+                e.preventDefault();
+
+                let formData = $('#create-ingredient-form').serialize();
+
+                $.ajax({
+                    url: '/Home/Create',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        alert('Ingrediente criado com sucesso!');
+                        $('#modal').modal('hide');
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Erro ao criar o ingrediente: ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+
+        // AJAX FILTRO CATEGORIAS
+
+        $(document).ready(function () {
+            $(".filters").click(function () {
+                let filterName = $(this).attr("id");
+                const urlParams = new URLSearchParams({
+                    categoria: filterName
+                });
+
+                $.ajax({
+                    url: `/Home/Index?${urlParams.toString()}`,
+                    type: 'GET',
+                    success: function (response) {
+                        $('#recipesMenu').html(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Erro ao enviar os ingredientes: ", error);
+                    }
+                });
+            })
+        })
+        // FILTRO BUSCA AJAX
+        $(document).ready(function () {
+            $("#submitBtn").click(function () {
+                let searchVal = $("#searchInput").val().trim();
+                console.log(searchVal)
+
+                const urlParams = new URLSearchParams({ nomeReceita: searchVal });
+
+                $.ajax({
+                    url: `/Home/Index?${urlParams.toString()}`,
+                    type: 'GET',
+                    success: function (response) {
+                        $('#recipesMenu').html(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Erro ao enviar os ingredientes: ", error);
+                    }
+                });
+            })
+        })
+    </script>
+}
+
+<main class="grow-1 container-lg mb-5">
+    <button class="openMyIngredients btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasIngredients">
+        <div class="icon-large"><img src="img/icons/barra-lateral-direita.png" alt=""></div>
+    </button>
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasIngredients" aria-labelledby="offcanvasIngredientsLabel">
+        <div class="offcanvas-header">
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body" id="ingredientsOffCanvas"></div>
+    </div>
+    <section id="recipesSection" class="f-column">
+        <nav id="categoriesFixed" class="f-row ali-center gap-large">
+            <div class="filters p-regular c-pointer text-center ali-cont-center">
+                <a style="text-decoration:none;color:black;">Todos</a>
+            </div>
+            <div class="vr"></div>
+            <button id="prevIcon" style="background: none; border: none; cursor: pointer; display: none" onclick="voltarCategorias()">
+                <img src="img/icons/seta-direita.png" alt="" style="width: 20px; height: 20px; transform: rotate(90deg)">
+            </button>
+            <div id="categories" class="f-row gap-large ali-center">
+                @foreach(var tipo in Model.TipoReceitas)
+                {
+                    <div class="filters p-regular c-pointer text-center ali-cont-center" id="@tipo">
+                        <a class="filtersValue" style="text-decoration:none;color:black;">@tipo</a>
+                    </div>
+                }
+            </div>
+            <button id="nextIcon" style="background: none; border: none; cursor: pointer;" onclick="avancarCategorias()">
+                <img src="img/icons/seta-direita.png" alt="" style="width: 20px; height: 20px; transform: rotate(-90deg)">
+            </button>
+        </nav>
+        <section id="recipesMenu" class="f-row flex-wrap gap-regular flex-row justify-content-center">
+
+        </section>
+    </section>
+    <aside id="ingredientsSection" class="f-column ali-center p-vertical-large" style="display: flex; border-right: 2px solid var(--lighterGrey);">
+        <section class="f-column jus-center gap-regular" id="myIngredients">
+            <div class="title text-center">Meus Ingredientes</div>
+            <p class="text-center m-0">Descubra receitas com os ingredientes que você tem em casa!</p>
+            <div id="allSelectedIngredients" class="f-row gap-regular p-regular"></div>
+            <hr class="m-2">
+            <div class="h4 text-center" style="font-weight: 600">Procure por Ingredientes</div>
+            <input id="searchIngredients" class="m-0-auto" type="text" placeholder="Digite aqui...">
+            <div id="filteredIngredients" class="f-row gap-regular p-regular text-nowrap overflow-scroll" style="min-width: 50px;"></div>
+        </section>
+        <section id="typeOfIngredients" class="f-column gap-large p-vertical-large">
+            @foreach (var categoria in Model.Categorias)
+            {
+                <div class="f-column">
+                    <button class="buttonCollapse collapsed" data-bs-toggle="collapse" data-bs-target="#@categoria" aria-expanded="false">
+                        <div class="f-row ali-center ali-between p-vertical-small p-horizontal-regular">
+                            <h4 class="m-0 categorias">@categoria</h4>
+                            <div class="icon-regular f-row ali-center"><img src="img/icons/seta-direita.png" alt=""></div>
+                        </div>
+                    </button>
+                    <div id="@categoria" class="collapse" style="">
+                        <div class="ingredientsOfCategory f-row gap-regular p-regular flex-grow-1 flex-wrap">
+                            @foreach (var ingrediente in Model.Ingredientes)
+                            {
+                                @if (ingrediente.Categoria == categoria)
+                                {
+                                    <div class="ingredient f-row c-pointer ali-cont-center">
+                                        <p id="@ingrediente.Nome" class="ingredientName p-horizontal-small">@ingrediente.Nome</p>
+                                    </div>
+                                }
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </section>
+        <div type="button" class="btn btn-secondary p-3 d-flex flex-row align-items-center justify-content-center gap-2" data-bs-toggle="modal" data-bs-target="#modal">
+            <img class="icon-regular" src="/img/icons/food.png" alt="" style="filter: invert();" />
+            <label class="fs-6 text-nowrap">Não encontrou o ingrediente?</label>
+        </div>
+    </aside>
+    <div class="modal" id="modal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title bolder">Adicione um ingrediente!</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4 w-100">
+                            <form id="create-ingredient-form" class="d-flex flex-column align-items-center">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="form-floating mt-3 mb-3 w-75">
+                                    <input asp-for="Ingrediente.Nome" class="form-control" placeholder="Nome" />
+                                    <label asp-for="Ingrediente.Nome" class="control-label"></label>
+                                    <span asp-validation-for="Ingrediente.Nome" class="text-danger"></span>
+                                </div>
+                                <div class="form-group w-75">
+                                    <label asp-for="Ingrediente.Categoria" class="control-label"></label>
+                                    <select asp-for="Ingrediente.Categoria" class="categoria form-control" asp-items="Html.GetEnumSelectList<TipoIngrediente>()"></select>
+                                    <span asp-validation-for="Ingrediente.Categoria" class="text-danger"></span>
+                                </div>
+                                <div class="form-group my-4 text-center">
+                                    <label>Este ingrediente não pode estar em uma dieta...</label>
+                                    <div class="d-flex flex-row justify-content-center flex-wrap gap-2 my-2">
+                                        @foreach (var restricao in Enum.GetValues(typeof(pratododia_project.Models.TipoRestricao)).Cast<TipoRestricao>())
+                                        {
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" name="RestricoesSelecionadas" value="@restricao" />
+                                                <label class="rest form-check-label">@restricao</label>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="button" id="submit-button" value="Criar" class="btn btn-primary" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+

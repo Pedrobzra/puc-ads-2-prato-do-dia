@@ -1,0 +1,181 @@
+﻿.back-calendar {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    background: #f8f9fa;
+    border-radius: 10px;
+    width: 100%;
+}
+
+.calendar-container {
+    background: #fff;
+    width: 450px;
+    border-radius: 10px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+}
+
+    .calendar-container .calendar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+div .calendar-navigation {
+    display: flex;
+}
+
+    .calendar-body ul {
+        list-style: none;
+        flex-wrap: wrap;
+        display: flex;
+        padding: 0 !important;
+        text-align: center;
+    }
+
+    .calendar-body .calendar-dates {
+        margin-bottom: 20px;
+    }
+
+    .calendar-body li {
+        width: calc(100% / 7);
+        font-size: 1.07rem;
+        color: #414141;
+    }
+
+    .calendar-body .calendar-weekdays li {
+        cursor: default;
+        font-weight: 500;
+    }
+
+    .calendar-body .calendar-dates li {
+        margin-top: 20px;
+        position: relative;
+        z-index: 1;
+        cursor: pointer;
+    }
+
+.calendar-dates li.inactive {
+    color: #aaa;
+}
+
+.calendar-dates li::before {
+    position: absolute;
+    content: "";
+    z-index: -1;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.calendar-dates li.active::before {
+    border: 3px solid #0d6efd;
+}
+
+.calendar-dates li:not(.active):hover::before {
+    background: #e4e1e1;
+}
+
+.selectDay::before {
+    background: #0d6efd;
+}
+
+.planned::before {
+    border: 3px solid #ff8603;
+    border-radius: 50%;
+    position: absolute;
+    content: "";
+    width: 40px;
+    height: 40px;
+}
+
+/* Pop Up */
+#bg-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    z-index: 999;
+}
+
+#schedulePopUp {
+    z-index: 1000;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+#removePopUp {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+#popUp {
+    z-index: 999;
+    background-color: white;
+    border-radius: 10px;
+}
+
+#remPopUp {
+    z-index: 999;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.closePopUp {
+    cursor: pointer;
+    transition: 0.2s;
+    border-radius: 10px;
+}
+
+    .closePopUp:hover {
+        background-color: var(--lightGrey);
+    }
+
+.input-data {
+    border: 1px solid grey;
+    border-radius: 10px;
+    text-align:center;
+}
+
+/*Calendar Recipe*/
+.recipeCalendar {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    min-height: 100px;
+    max-height: 100px;
+    max-width: 450px; 
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12)
+}
+@media screen and (max-width: 1200px) {
+    .calendar-container {
+        width: 700px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .calendar-container {
+        width: fit-content;
+    }
+    .back-calendar {
+        width: fit-content;
+    }
+
+    .remove-text {
+        font-size: 0px;
+        gap: 0 !important;
+    }
+}

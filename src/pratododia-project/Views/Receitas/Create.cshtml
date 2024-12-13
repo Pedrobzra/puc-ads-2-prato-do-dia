@@ -1,0 +1,221 @@
+﻿@model pratododia_project.ViewModels.ReceitaIngredienteViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+@section Styles {
+    <style>
+        @@media screen and (max-width: 576px) {
+            .info-card {
+                width: 406px;
+                flex-direction: row !important;
+            }
+
+            .input-position {
+                justify-self: end !important;
+            }
+        }
+    </style>
+}
+
+<main class="grow-1 container-lg d-flex flex-column mb-5">
+    <h1 class="fw-bold p-3">Adicionar Receita</h1>
+    <div class="">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="d-flex flex-column flex-md-row align-items-center rounded shadow gap-3 p-3 mb-5" style="min-height: 300px">
+                <div class="d-flex flex-column justify-content-center align-items-center" style="min-width: 150px; min-height: 150px;">
+                    <div id="div-image">
+                      <div class="d-flex flex-column justify-content-center align-items-center" id="preview-null">  
+                        <img src="~/img/icons/IconUp.png" class="icon-large" />
+                        <p class="text-center p-regular m-0">
+                            Envie uma foto da receita
+                        </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column justify-content-center align-items-center w-75 gap-3">
+                    <div class="form-floating w-100">
+                        <input asp-for="NomeReceita" class="form-control" placeholder="Digite aqui o Título da receita" />
+                        <label asp-for="NomeReceita" class="control-label fw-normal p-3">Título da receita</label>
+                        <span asp-validation-for="NomeReceita" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating w-100">
+                        <textarea asp-for="Descricao" class="form-control" style="resize: none; height: 170px" placeholder="Descrição"></textarea>
+                        <label asp-for="Descricao" class="control-label">Descrição</label>
+                        <span asp-validation-for="Descricao" class="text-danger"></span>
+                    </div>
+                    <div class="d-flex w-100 justify-content-center align-items-center">
+                        <label for="formFileSm" class="form-label"></label>
+                        <input class="form-control" asp-for="CaminhoImg" name="file" id="receita-image" type="file" accept="image/jpeg, image/png, image/jpg">
+                    </div>
+                    <span asp-validation-for="CaminhoImg" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="d-flex flex-row flex-wrap justify-content-center gap-3 mb-5">
+                <div class="info-card d-flex flex-column justify-content-between form-group rounded shadow gap-2 p-3">
+                    <div class="d-flex flex-row justify-content-center align-items-center gap-2">
+                        <img class="icon-regular align-self-center" src="/img/icons/clock.png" alt="" />
+                        <label asp-for="TempoPreparo" class="control-label">Tempo</label>
+                    </div>
+                    <div class="d-flex">
+                        <input type="time" asp-for="TempoPreparo" class="form-control " />
+                        <span asp-validation-for="TempoPreparo" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="info-card d-flex flex-column form-group rounded shadow gap-2 p-3">
+                    <div class="d-flex flex-row justify-content-center align-items-center gap-2">
+                        <img src="~/img/icons/yield.png" class="icon-regular align-self-center" alt="" />
+                        <label asp-for="Rendimento" class="control-label">Rendimento (porções)</label>
+                    </div>
+                    <div class="input-group d-flex flex-row justify-content-end justify-content-sm-center align-items-center gap-2">
+                        <div class="d-flex f-row gap-1">
+                            <div class="input-group-prepend">
+                                <button class="btn btn-secondary" type="button" id="button-decrement">-</button>
+                            </div>
+                            <input type="text" id="Rendimento" asp-for="Rendimento" class="form-control text-center bg-light" value="1" readonly style="width: 50px; height: 38px;">
+                            <div class="input-group-append">
+                                <button class="btn btn-secondary" type="button" id="button-increment">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card d-flex flex-column justify-content-between form-group rounded shadow gap-2 p-3">
+                    <div class="d-flex flex-row justify-content-center align-items-center gap-2">
+                        <img src="~/img/icons/difficulty.png" class="icon-regular align-self-center" alt="" />
+                        <label asp-for="Dificuldade" class="control-label">Dificuldade</label>
+                    </div>
+                    <div>
+                        <select asp-for="Dificuldade" class="form-control text-center" asp-items="Html.GetEnumSelectList<TipoDificuldade>()"></select>
+                        <span asp-validation-for="Dificuldade" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="info-card d-flex flex-column justify-content-between rounded shadow gap-2 p-3">
+                    <div class="d-flex flex-row justify-content- align-items-center gap-2">
+                        <img src="/img/icons/price-tag.png" class="icon-regular align-self-center" alt="" />
+                        <label asp-for="Categoria" class="control-label fw-bold"></label>
+                    </div>
+
+                    <select asp-for="Categoria" class="categorias form-control text-center" style="width: 200px;" asp-items="Html.GetEnumSelectList<TipoReceita>()"></select>
+                </div>
+            </div>
+
+            <div class="d-flex flex-column rounded shadow gap-2 p-3 mb-5">
+                <label class="fw-bold fs-3 align-self-start p-3">Selecione os ingredientes</label>
+                <div class="d-flex flex-column gap-2">
+                    <div class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-2">
+                        <div asp-action="Search" class="d-flex flex-nowrap form-floating gap-1 h-100 w-75">
+                            <input type="search" id="search-string" name="searchString" class="form-control" placeholder="Digite aqui..." />
+                            <label class="carousel-control-next-label fw-normal p-3">Digite aqui...</label>
+                        </div>
+                        <div type="button" class="btn btn-secondary p-3 d-flex flex-row align-items-center justify-content-center gap-2" data-bs-toggle="modal" data-bs-target="#modal">
+                            <img class="icon-regular" src="/img/icons/food.png" alt="" style="filter: invert();" />
+                            <label class="fs-6 text-nowrap">Não encontrou o ingrediente?</label>
+                        </div>
+                    </div>
+                    <div id="IngredientList" class="d-flex flex-row flex-wrap gap-2 overflow-scroll" style="max-height:110px">
+                        @foreach (var ingrediente in Model.Ingredientes)
+                        {
+                            <div IdIngrediente="@ingrediente.IdIngrediente" class="text-nowrap ingredient btn btn-outline-secondary d-flex flex-row justify-content-center align-content-between p-2">
+                                <div>@ingrediente.Nome</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div>
+                    <label class="fw-bolder fs-4 align-self-start p-3">Ingredientes Selecionados</label>
+                    <span asp-validation-for="Quantidade" class="text-danger"></span>
+                    <div id="container-ingSelected">
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex flex-column rounded shadow gap-3 p-3 mb-5">
+                <div id="containerPassos" class="d-flex flex-column justify-content-center align-items-center gap-2">
+                    <label class="fw-bold fs-3 align-self-start p-3">Passos da Receita</label>
+                    <span asp-validation-for="Passos" class="text-danger"></span>
+                    <div class="form-floating w-100">
+                        <input type="text" name="Passos" asp-for="Passos" placeholder="Passo 1" class="form-control" />
+                        <label class="control-label fw-normal p-3">Passo 1</label>
+                    </div>
+                </div>
+                <div class="d-flex flex-row justify-content-end align-items-center gap-2">
+                    <div class="input-group-prepend">
+                        <button class="btn btn-danger d-flex justify-content-center align-items-center" id="button-delete-input" type="button">
+                            <img class="icon-regular" style="filter: invert();" src="~/img/icons/remove.png" alt="" />
+                        </button>
+                    </div>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary d-flex justify-content-center align-items-center" id="button-create-input" type="button">
+                            <img class="icon-regular" style="filter: invert();" src="~/img/icons/add.png" alt="" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group d-flex justify-content-center">
+                <input type="submit" value="Create" class="btn btn-primary w-75"/>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title bolder">Adicione um ingrediente!</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4 w-100">
+                            <form id="create-ingredient-form" class="d-flex flex-column align-items-center">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="form-floating mt-3 mb-3 w-75">
+                                    <input asp-for="Ingrediente.Nome" class="form-control" placeholder="Nome" />
+                                    <label asp-for="Ingrediente.Nome" class="control-label"></label>
+                                    <span asp-validation-for="Ingrediente.Nome" class="text-danger"></span>
+                                </div>
+                                <div class="form-group w-75">
+                                    <label asp-for="Ingrediente.Categoria" class="control-label"></label>
+                                    <select asp-for="Ingrediente.Categoria" class="categoria form-control" asp-items="Html.GetEnumSelectList<TipoIngrediente>()"></select>
+                                    <span asp-validation-for="Ingrediente.Categoria" class="text-danger"></span>
+                                </div>
+                                <div class="form-group my-4 text-center">
+                                    <label>Este ingrediente não pode estar em uma dieta...</label>
+                                    <div class="d-flex flex-row justify-content-center flex-wrap gap-2 my-2">
+                                        @foreach (var restricao in Enum.GetValues(typeof(pratododia_project.Models.TipoRestricao)).Cast<TipoRestricao>())
+                                        {
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" name="RestricoesSelecionadas" value="@restricao" />
+                                                <label class="rest form-check-label">@restricao</label>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="button" id="submit-button" value="Criar" class="btn btn-primary" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <script src="~/js/add-recipe.js" defer></script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

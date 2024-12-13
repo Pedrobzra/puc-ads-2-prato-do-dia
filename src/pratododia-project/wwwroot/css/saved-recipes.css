@@ -1,0 +1,279 @@
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("../css/modules/root.css");
+
+body {
+    font-family: 'Hanken Grotesk', sans-serif;
+    margin: 0 auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    font-size: 50px;
+}
+
+p {
+    font-size: var(--bs-body-font-size);
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+main {
+    height: 100%;
+    display: grid;
+    gap: 50px;
+    grid-template-rows: 1fr;
+    grid-template-columns: 50% 50%;
+    max-width: 960px;
+    margin-bottom: 20px;
+}
+
+.SavedRecipes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ListRecipes {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.Recipe {
+    display: flex;
+    align-items: center;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.DescRecipe {
+    padding: 0 10px 0 10px;
+}
+
+.DIVTitRecipe {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.TitRecipe {
+    text-align: start;
+}
+
+.InfRecipe {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.ListPlanejadas {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+}
+
+.Planejamentos {
+    display: flex;
+    flex-direction: column;
+}
+
+.Planejamentos h1 {
+    text-align: center;
+}
+
+.imgRecipe {
+    height: 120px;
+    width: 120px;
+}
+
+.imgPickedRecipe {
+    height: 120px;
+    width: 120px;
+}
+
+#xBotao {
+    border: none;
+    background: none;
+
+    img {
+        height: 30px;
+        width: 30px;
+        cursor: pointer;
+    }
+}
+
+.PlanBotao {
+    border: 1px solid var(--orange);
+    background: white;
+    border-radius: 15px;
+    font-size: 16px;
+    height: 50px;
+    width: 100px;
+    cursor: pointer;
+    transition: background 0.25s ease;
+}
+
+.PlanBotao:hover {
+    border: none;
+    background: linear-gradient(var(--red), var(--orange));
+    color: white;
+}
+
+
+.wrapper {
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    width: 80%;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 20px 10px 30px;
+}
+
+.current-date {
+    font-size: 1.45rem;
+    font-weight: 600;
+    margin-left: -10px;
+}
+
+.header button {
+    border: none;
+    background: none;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    cursor: pointer;
+
+    #ArrowLeft {
+        transform: rotate(90deg);
+        width: 20px;
+        height: 20px;
+    }
+
+    #ArrowRight {
+        transform: rotate(-90deg);
+        width: 20px;
+        height: 20px;
+    }
+}
+
+.header button:hover {
+    transition: background-color 0.3s ease;
+    background-color: var(--lighterGrey);
+}
+
+.icons {
+    display: flex;
+    gap: 10px;
+}
+
+.calendar {
+    padding: 10px;
+}
+
+.weeks {
+    padding: 0;
+}
+
+.days {
+    margin-bottom: 20px;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+li {
+    list-style: none;
+}
+
+.weeks {
+    display: flex;
+    justify-content: space-around;
+}
+
+.days li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    height: 40px;
+    border-radius: 10px;
+}
+
+.days li:hover {
+    transition: background-color 0.3s ease;
+    background-color: var(--lighterGrey);
+}
+
+.days .inactive {
+    color: var(--lightGrey);
+}
+
+.days .active {
+    background: linear-gradient(var(--red), var(--orange));
+    color: white;
+}
+
+.PlannedRecipes {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pRecipe {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.25);
+    gap: 20px;
+    border-radius: 20px;
+    padding-right: 10px;
+    overflow: hidden;
+    width: 350px;
+    height: 80px;
+}
+
+.DIVimgRecipe {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.disabled {
+    pointer-events: none;
+    color: var(--lightGrey);
+}
+
+.enabled {
+    pointer-events: auto;
+    color: black;
+}
+
+@media (max-width: 910px) {
+    main {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0;
+        height: fit-content;
+    }
+
+    .SavedRecipes {
+        align-items: center;
+    }
+}

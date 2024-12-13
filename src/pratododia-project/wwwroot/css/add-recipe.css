@@ -1,0 +1,391 @@
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("modules/root.css");
+
+body {
+  font-family: "Hanken Grotesk", sans-serif;
+  margin: 0 auto;
+
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  width: 85dvw;
+  max-width: 960px;
+}
+
+.numb-input {
+  width: 28px;
+  height: 28px;
+}
+
+.numb::-webkit-inner-spin-button,
+.numb::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.hover-grey:hover {
+  background-color: var(--lightGrey);
+}
+
+.b-bottom {
+  border: none;
+  border-bottom: 1px solid var(--lighterGrey);
+}
+
+.primary-info {
+  .containerImg {
+    position: relative;
+    width: 216px;
+    height: 216px;
+    overflow: hidden;
+
+    background: none;
+    border: none;
+
+    #imgRecipe {
+      display: none;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+
+      box-shadow: 0px 0px 20px 0px var(--lighterGrey);
+    }
+
+    .textUpload {
+      font-weight: 500;
+      font-size: 13px;
+      text-align: center;
+
+      padding: 12px;
+      margin: 0;
+    }
+
+    input {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      border-radius: 10%;
+    }
+  }
+
+  .descripitionRecipe {
+    height: 128px;
+    resize: none;
+  }
+}
+
+.secundary-info {
+  legend {
+    overflow-wrap: break-word;
+    width: fit-content;
+  }
+
+  select {
+    width: max-content;
+    height: 32px;
+  }
+
+  .containerCategory {
+    display: grid;
+    grid-template-columns: 30% 70%;
+  }
+}
+
+.container-search {
+  width: 100%;
+  height: fit-content;
+
+  form {
+    width: 100%;
+    border: 1px solid var(--lighterGrey);
+
+    input {
+      border: none;
+      box-shadow: none;
+      outline: none;
+
+      width: 100%;
+    }
+  }
+}
+
+.container-list {
+  display: none;
+
+  .category-text {
+    color: var(--lightGrey);
+  }
+}
+
+.btn-create-ingredient {
+  height: 40px;
+
+  border: none;
+  background: var(--lighterGrey);
+}
+
+& .ing-select {
+  display: grid;
+  grid-template-areas: "numb measure of ingredient x";
+  grid-template-columns: 10% 40% 10% 30% 10%;
+
+  & .selectText {
+    grid-area: measure;
+    height: 32px;
+    box-shadow: none;
+  }
+
+  & .of {
+    grid-area: of;
+  }
+
+  & .name-ingredient {
+    grid-area: ingredient;
+    justify-self: end;
+    text-align: end;
+  }
+
+  & .btnRemove {
+    grid-area: x;
+    background: none;
+    border: none;
+  }
+}
+
+#containerStage {
+  & .stage {
+    & .descStage {
+      height: 120px;
+      resize: none;
+    }
+    & .remove-stage {
+      background: none;
+      border: none;
+    }
+    & .add-stage {
+      display: flex;
+      background: var(--lighterGrey);
+      border: none;
+    }
+  }
+}
+
+.send-recipe {
+  height: 48px;
+  color: white;
+  border: none;
+  background: var(--orange);
+}
+
+@media (min-width: 600px) {
+  main {
+    width: 85dvw;
+  }
+
+  .add-recipe {
+    text-align: left;
+
+    padding-left: 12px;
+    margin: 0 auto;
+    margin-top: 24px;
+  }
+
+  .subtitle {
+    text-align: left;
+    font-weight: 400;
+
+    width: 100%;
+    padding-left: 12px;
+    margin: 0 auto;
+  }
+
+  .stepTitle {
+    text-align: left;
+    padding-left: 12px;
+  }
+
+  .primaryInfo {
+    .cardInfo {
+      flex-direction: row;
+      gap: 12px;
+
+      .info {
+        align-items: start;
+
+        .titleRecipe {
+          width: 95%;
+        }
+
+        .descripitionRecipe {
+          width: 95%;
+        }
+      }
+    }
+
+    #photoRecipe {
+      .imgRecipe {
+        .textUpload {
+          font-size: medium;
+        }
+      }
+    }
+
+    .description {
+      .descripitionRecipe {
+        font-size: medium;
+      }
+    }
+  }
+
+  .secundaryInfo {
+    .infoTime {
+      grid-template-columns: 40% 60%;
+    }
+  }
+}
+
+@media (min-width: 960px) {
+  main {
+    width: 70dvw;
+    justify-content: center;
+  }
+
+  .addRecipe {
+    text-align: left;
+
+    padding-left: 12px;
+    margin: 0 auto;
+    margin-top: 24px;
+  }
+
+  .subtitle {
+    text-align: left;
+    font-weight: 400;
+
+    padding-left: 12px;
+    margin: 0 auto;
+  }
+
+  .stepTitle {
+    text-align: left;
+    padding-left: 12px;
+  }
+
+  .secundaryInfo {
+    display: grid;
+    grid-template-areas:
+      "time difficulty rend"
+      "tags tags tags";
+
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 100%;
+    gap: 6px;
+
+    margin: 0px;
+
+    .legendInfo {
+      width: fit-content;
+    }
+
+    .selectText {
+      width: fit-content;
+    }
+
+    & .infoTime {
+      grid-area: time;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      row-gap: 6px;
+
+      width: 95%;
+      margin: 0px;
+      padding: 2.5%;
+
+      div {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+      }
+    }
+
+    & .infoDifficulty {
+      grid-area: difficulty;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      row-gap: 0px;
+
+      width: 95%;
+      margin: 0px;
+      padding: 2.5%;
+
+      div {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+      }
+    }
+
+    & .infoTags {
+      grid-area: tags;
+      display: grid;
+      grid-template-columns: 30% 70%;
+
+      div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        row-gap: 6px;
+      }
+
+      .tagsRecipe {
+        width: 100%;
+        flex-direction: row;
+        justify-content: start;
+      }
+
+      .legendInfo {
+        text-align: center;
+      }
+    }
+
+    & .infoRend {
+      grid-area: rend;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      row-gap: 0px;
+
+      width: 95%;
+      margin: 0px;
+      padding: 2.5%;
+
+      div {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+      }
+    }
+  }
+}

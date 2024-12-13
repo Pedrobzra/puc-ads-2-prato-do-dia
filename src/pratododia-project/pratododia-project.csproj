@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>pratododia_project</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\NewFolder1\**" />
+    <Content Remove="wwwroot\NewFolder1\**" />
+    <EmbeddedResource Remove="wwwroot\NewFolder1\**" />
+    <None Remove="wwwroot\NewFolder1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\Class.cs" />
+    <Compile Remove="Models\Class1.cs" />
+    <Compile Remove="Models\Class2.cs" />
+    <Compile Remove="Models\CodeFile.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Home\Add-recipe.cshtml" />
+    <Content Remove="wwwroot\css\add-recipe.css" />
+    <Content Remove="wwwroot\css\site.css" />
+    <Content Remove="wwwroot\js\site.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Views\Shared\_Layout.cshtml.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\ImagensUsuarios\" />
+  </ItemGroup>
+
+</Project>

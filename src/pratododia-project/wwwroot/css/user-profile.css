@@ -1,0 +1,284 @@
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("modules/root.css");
+
+#container {
+  width: 960px;
+  display: flex;
+  justify-content: center;
+}
+
+main {
+  flex-grow: 4;
+  grid-area: main;
+  padding: 20px 0;
+  padding-left: 20px;
+}
+
+aside {
+  flex-grow: 2;
+  border-left: 2px solid var(--lighterGrey);
+  grid-area: aside;
+  padding: 20px 0 20px 20px;
+}
+
+.ProfilePicture {
+  width: 75px;
+  height: 75px;
+  min-width: 75px;
+  border-radius: 100%;
+  overflow: hidden;
+}
+
+#name {
+  font-weight: bolder;
+  font-size: larger;
+  max-height: 70px;
+  overflow: auto;
+}
+
+.DietaryRestrictions,
+.RecipesCreated {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.DietaryRestrictions .title {
+  padding: 15px 0 8px 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px 0;
+
+  justify-content: space-between;
+  align-items: center;
+
+  flex-grow: 1;
+
+  padding: 12px;
+  max-width: 500px;
+  max-height: 248px;
+
+  box-shadow: 0px 0px 10px 0px var(--lightGrey);
+  border-radius: 10px;
+}
+
+.restriction {
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  font-size: 18px;
+
+  border-radius: 5px;
+  border: 1px solid var(--lighterGrey);
+  background-color: white;
+
+  cursor: pointer;
+}
+
+.selectRestriction {
+  background: var(--blue);
+  color: white;
+}
+
+.restriction:hover {
+  border: 1px solid var(--blue);
+  transition: 0.3s;
+}
+
+aside .title {
+  padding-bottom: 5px;
+}
+
+aside .card {
+  justify-content: start;
+  align-items: center;
+
+  max-height: none;
+  width: fit-content;
+  height: 393px;
+  overflow: auto;
+}
+
+.recipeAside {
+  border-radius: 8px;
+  overflow: hidden;
+
+  width: 488px;
+  height: 150px;
+  min-height: 150px;
+  box-shadow: 0 0 15px 0 var(--lighterGrey);
+  transition: 0.1s;
+}
+
+.recipeAside:hover {
+  background-color: var(--lighterGrey);
+  & button {
+    background-color: var(--lightGrey);
+  }
+}
+
+.asideImg {
+  overflow: hidden;
+  width: 139px;
+  max-height: 100%;
+  max-width: 100%;
+
+  & img {
+    height: 100%;
+    max-height: 100%;
+  }
+}
+
+.recipeText {
+  grid-area: recipeText;
+  justify-content: space-between;
+  /* max-width: 60%; */
+  width: 60%;
+  min-width: 40%;
+}
+
+.recipeName {
+  width: 100%;
+  flex-grow: 100%;
+}
+
+.recipeAttributes {
+  flex-grow: 1;
+  justify-content: end;
+}
+
+.recipeButtons {
+  align-items: end;
+}
+
+.recipeContainer button {
+  cursor: pointer;
+  height: fit-content;
+  padding: 10px 15px;
+  border: 0;
+  border-radius: 30px;
+  font-weight: 700;
+  transition: 0.2s;
+  background-color: var(--lighterGrey);
+}
+
+.recipeContainer button:hover {
+  background-color: #919191;
+  color: var(--lighterGrey);
+}
+
+@media screen and (max-width: 959px) {
+  .ProfilePicture {
+    min-width: 60px;
+    width: 60px;
+    height: 60px;
+  }
+
+  #container {
+    flex-direction: column;
+    justify-content: start;
+    padding: 20px;
+    width: 100%;
+  }
+
+  main,
+  aside {
+    flex-grow: 0;
+    padding: 0 20px;
+    border-left: none;
+  }
+
+  .title,
+  .myProfile,
+  .DietaryRestrictions {
+    display: flex;
+    justify-content: center;
+  }
+
+  .DietaryRestrictions,
+  .RecipesCreated {
+    align-items: center;
+  }
+
+  .DietaryRestrictions .card {
+    width: 100%;
+    padding: 10px;
+    gap: 10px;
+  }
+
+  aside .card {
+    width: fit-content;
+    padding: 10px;
+    gap: 10px;
+
+    height: fit-content;
+    max-width: none;
+  }
+
+  .title {
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 548px) {
+  aside .card {
+    width: 100%;
+  }
+
+  .recipeAside {
+    width: 100%;
+  }
+
+  /* Nesse tamanho de tela eu queria que os botões de Editar e Deletar se tornassem ícones clicáveis, mas não sei fazer isso */
+
+  .recipeText {
+    width: 100%;
+  }
+}
+
+@media screen and (min-height: 1200px) {
+  #container {
+    flex-direction: column;
+    justify-content: start;
+    padding: 20px;
+    width: 100%;
+  }
+
+  main,
+  aside {
+    flex-grow: 0;
+    padding: 0 20px;
+    border-left: none;
+  }
+
+  .title,
+  .myProfile,
+  .DietaryRestrictions {
+    display: flex;
+    justify-content: center;
+  }
+
+  .DietaryRestrictions,
+  .RecipesCreated {
+    align-items: center;
+  }
+
+  .DietaryRestrictions .card {
+    width: 100%;
+    padding: 10px;
+    gap: 10px;
+  }
+
+  aside .card {
+    width: fit-content;
+    height: fit-content;
+    max-width: none;
+  }
+
+  .title {
+    text-align: center;
+  }
+}

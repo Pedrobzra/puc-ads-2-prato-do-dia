@@ -1,0 +1,181 @@
+﻿@model pratododia_project.ViewModels.UsuarioIngredienteViewModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script defer>
+
+        $(document).ready(function () {
+
+            let dietas = Array.from(document.getElementsByClassName("restricao-button"));
+            dietas.forEach((diet) => {
+                let nomeDieta = $(diet).attr('id');
+                let dietaAtual = localStorage.getItem(`dietaSelecionada_${nomeDieta}`);
+                if (dietaAtual === "true") {
+                    $(diet).addClass("dietaAplicada");
+                }
+            });
+
+            $('.restricao-button').click(function () {
+                let restricaoSelecionada = parseInt($(this).val());
+                let nomeDieta = $(this).attr('id');
+
+                $.post('/Usuarios/AtualizarStatusRestricao', { restricaoSelecionada: restricaoSelecionada })
+                    .done(() => {
+                        localStorage.setItem(`dietaSelecionada_${nomeDieta}`, 'true');
+                        $(this).addClass("dietaAplicada");
+                        location.reload()
+                    })
+                    .fail(function () {
+                        console.log('Erro ao aplicar dieta. Tente novamente.');
+                    });
+            });
+
+
+            $('#clean-filters').click(function () {
+                dietas.forEach((diet) => {
+                    let nomeDieta = $(diet).attr('id');
+                    localStorage.setItem(`dietaSelecionada_${nomeDieta}`, 'false');
+                    $(diet).removeClass("dietaAplicada");
+                });
+            });
+        });
+
+
+        let dietas = Array.from(document.getElementsByClassName("restricao-button"))
+        dietas.forEach((dieta) => {
+            dieta.innerHTML = dieta.innerHTML.replaceAll("_", " ")
+        })
+
+
+        let categorias = Array.from(document.getElementsByClassName("cat"))
+        categorias.forEach((cat) => {
+            let categoriaName = cat.innerText.trim().replaceAll(" ", "_");
+            let isCollapsed = localStorage.getItem(`collapse_${categoriaName}`);
+            let collapseElement = $(`#${categoriaName}`);
+            if (isCollapsed === "false") {
+                collapseElement.addClass("show");
+            }
+        });
+
+        $('.collapse').on('hide.bs.collapse', function () {
+            let categoriaName = $(this).attr('id');
+            localStorage.setItem(`collapse_${categoriaName}`, "true");
+        });
+
+        $('.collapse').on('show.bs.collapse', function () {
+            let categoriaId = $(this).attr('id');
+            localStorage.setItem(`collapse_${categoriaId}`, "false");
+        });
+
+        categorias.forEach((cat) => {
+            cat.innerHTML = cat.innerHTML.replaceAll("_", " ")
+        })
+
+
+        let inputImg = $('#usuario-image');
+        let btnSave = $('#save-pic');
+
+        inputImg.change(function () {
+            if (this.files && this.files.length > 0) {
+                btnSave.show();
+            }
+            else {
+                btnSave.hide();
+            }
+        })
+    </script>
+}
+
+<style>
+    .dietaAplicada {
+        background-color: #0d6efd;
+        color: white;
+    }
+</style>
+<div class="container">
+    <div class="flex-lg-row d-flex flex-column justify-content-center justify-content-evenly p-5 gap-5">
+        <div class="d-flex flex-column">
+            <div class="d-flex flex-row justify-content-between align-items-center w-100">
+                <h2>Olá, @Model.Usuario.NomeUsuario</h2>
+            </div>
+            <div id="edit-container" class="d-flex flex-column w-100">
+                @if (ViewBag.Edit == true)
+                {
+                    @await Html.PartialAsync("_Edit")
+                }
+                else
+                {
+                    @await Html.PartialAsync("_Details")
+
+                }
+            </div>
+            @if (User.IsInRole("True"))
+            {
+                <div class="d-flex flex-column gap-2">
+                <a asp-action="ListIngredient" asp-controller="Home" class="btn btn-outline-primary">Lista de Ingredientes</a>
+                <a asp-action="Index" class="btn btn-outline-primary">Lista de Usuários</a>
+                </div>
+            }
+        </div>
+        <div class="d-flex flex-column gap-5" style="max-width: 540px">
+            <div class="d-flex flex-column align-items-center gap-3">
+                <h2>Minha Dieta</h2>
+                <form asp-action="AtualizarStatusRestricao" method="post" class="d-flex flex-row flex-wrap gap-1">
+                    @foreach (var restricao in Enum.GetValues(typeof(pratododia_project.Models.TipoRestricao)).Cast<TipoRestricao>())
+                    {
+                        <button type="button" class="restricao-button btn border" name="restricaoSelecionada" value="@((int)restricao)" id="@restricao">@restricao</button>
+                    }
+                </form>
+            </div>
+
+            <div class="d-flex flex-column align-items-center gap-2">
+                <h3>Quero remover também...</h3>
+                <form asp-action="LimparIngredientesOcultos" method="post">
+                    <button type="submit" class="btn btn-outline-secondary mt-3" id="clean-filters">Limpar filtros</button>
+                </form>
+                @foreach (var categoria in Enum.GetValues(typeof(TipoIngrediente)).Cast<TipoIngrediente>().ToList())
+                {
+                    <div class="d-flex flex-column w-100">
+                        <button data-bs-toggle="collapse" data-bs-target="#@categoria" class=" px-3 py-2 border border-1 rounded-2 text-black my-2">
+                            <div class="d-flex flex-row">
+                                <h4 class="cat m-0">@categoria</h4>
+                            </div>
+                        </button>
+                        <div class="collapse" id="@categoria">
+                            <div class="d-flex flex-row gap-2 flex-wrap">
+                                @if (Model.Ingredientes != null)
+                                {
+                                    @foreach (var ingrediente in Model.Ingredientes)
+                                    {
+                                        @if (ingrediente.Categoria == categoria)
+                                        {
+                                            var usuarioIngrediente = Model.UsuarioIngrediente.FirstOrDefault(ui => ui.IdIngrediente == ingrediente.IdIngrediente);
+                                            var isOculto = usuarioIngrediente?.Status ?? false;
+                                            <form asp-action="AtualizarStatusIngrediente" method="post" style="display:inline;">
+                                                <input type="hidden" name="idIngrediente" value="@ingrediente.IdIngrediente" />
+                                                <input type="hidden" name="ocultar" value="@(isOculto ? "false" : "true")" />
+
+                                                <button type="submit" class="btn @(isOculto ? "btn-outline-danger" : "btn-outline-primary")">
+                                                    @ingrediente.Nome
+                                                </button>
+
+                                            </form>
+                                        }
+                                    }
+
+                                }
+                                else
+                                {
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
